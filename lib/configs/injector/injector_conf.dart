@@ -13,7 +13,7 @@ void configureDepedencies() {
   getIt.registerLazySingleton(() => AppRoutesConf());
 
   getIt.registerLazySingleton<LocalStorage>(() => HiveLocalStorage());
-
+  getIt.registerLazySingleton(() => HiveLocalStorage());
   getIt.registerLazySingleton(
     () => NetworkInfo(
       internetConnectionChecker: getIt<InternetConnectionChecker>(),

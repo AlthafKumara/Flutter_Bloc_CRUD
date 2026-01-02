@@ -1,6 +1,9 @@
 import 'package:crud_clean_bloc/configs/injector/injector_conf.dart';
+import 'package:crud_clean_bloc/routes/app_routes_conf.dart';
+import 'package:crud_clean_bloc/routes/app_routes_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -30,19 +33,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const MyHomePage(),
+    return ScreenUtilInit(
+      designSize: const Size(393, 852),
+      child: MaterialApp.router(
+        routerConfig: AppRoutesConf().router,
+        debugShowCheckedModeBanner: false,
+      ),
     );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: const Center(child: Text('Hello World')));
   }
 }

@@ -1,7 +1,9 @@
-// import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
-// import 'package:crud_clean_bloc/features/library/presentation/widgets/default_book_card.dart';
-import 'package:crud_clean_bloc/widgets/button_medium.dart';
+import '../../domain/entities/book_entity.dart';
+import '../cubit/library_cubit.dart';
+import '../widgets/default_book_card.dart';
+import '../../../../widgets/button_medium.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/themes/app_color.dart';
@@ -13,7 +15,10 @@ class LibraryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.neutral100,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
+        backgroundColor: AppColor.neutral100,
         title: Text(
           'Library',
           style: AppTextStyle.heading3(
@@ -21,6 +26,7 @@ class LibraryView extends StatelessWidget {
             color: AppColor.neutral900,
           ),
         ),
+        actionsPadding: EdgeInsets.only(right: 16.w),
         actions: [
           CustomButtonMedium.primaryMedium(
             color: AppColor.primary500,
@@ -35,17 +41,32 @@ class LibraryView extends StatelessWidget {
           ),
         ],
       ),
-      // body: _buildList(),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+        child: BlocBuilder<LibraryCubit, LibraryState>(
+          builder: (context, state) {
+            if (state is GetAllBookLoadingState) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is GetAllBookSuccessState) {
+              return _buildList(state.books);
+            } else if (state is GetAllBookErrorState) {
+              return Center(child: Text(state.message));
+            } else {
+              return const Center(child: Text('Tidak ada data'));
+            }
+          },
+        ),
+      ),
     );
   }
 
-  // Widget _buildList(List<GetBooksModel> books) {
-  //   return ListView.builder(
-  //     scrollDirection: Axis.vertical,
-  //     itemBuilder: (context, index) {
-  //       return DefaultBookCard(book: books[index]);
-  //     },
-  //     itemCount: books.length,
-  //   );
-  // }
+  Widget _buildList(List<BookEntity> books) {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemBuilder: (context, index) {
+        return DefaultBookCard(book: books[index]);
+      },
+      itemCount: books.length,
+    );
+  }
 }

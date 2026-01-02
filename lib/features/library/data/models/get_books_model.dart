@@ -16,12 +16,13 @@ class GetBooksModel extends BookEntity {
        );
 
   factory GetBooksModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return GetBooksModel(
       id: json['id'],
       title: json['title'],
       description: json['description'],
       author: json['author'],
-      coverUrl: json['coverUrl'],
+      coverUrl: json['cover_url'],
     );
   }
 
@@ -35,7 +36,7 @@ class GetBooksModel extends BookEntity {
       title: map['title'],
       description: map['description'],
       author: map['author'],
-      coverUrl: map['coverUrl'],
+      coverUrl: map['cover_url'],
     );
   }
 
@@ -49,7 +50,7 @@ class GetBooksModel extends BookEntity {
       'title': title,
       'description': description,
       'author': author,
-      'coverUrl': coverUrl,
+      'cover_url': coverUrl,
     };
   }
 

@@ -1,12 +1,16 @@
-import 'package:dartz/dartz.dart';
+import 'package:crud_clean_bloc/core/errors/exception.dart';
 
 import '../../../../core/cache/local_storage.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/network/network_checker.dart';
-import '../../domain/entities/book_entity.dart';
-import '../../domain/repositories/book_repository.dart';
 import '../datasources/book_local_datasource.dart';
 import '../datasources/book_remote_datasource.dart';
+
+import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
+
+import 'package:dartz/dartz.dart';
+
+import '../../domain/repositories/book_repository.dart';
 
 class BooksRepositoryImpl implements BookRepository {
   final LocalStorage localStorage;
@@ -36,15 +40,18 @@ class BooksRepositoryImpl implements BookRepository {
       connected: () async {
         try {
           final listbook = await bookRemoteDatasource.getBooks();
-          await localStorage.save(
-            key: "library",
-            boxName: "book",
-            value: listbook,
-          );
+          // await localStorage.save(
+          //   key: "library",
+          //   boxName: "book",
+          //   value: listbook,
+          // );
 
           return Right(listbook);
+        } on ServerException catch (e) {
+          print(e.message);
+          return Left(ServerFailure(e.message));
         } catch (e) {
-          return Left(ServerFailure());
+          return Left(ServerFailure(e.toString()));
         }
       },
       notConnected: () async {
@@ -52,7 +59,7 @@ class BooksRepositoryImpl implements BookRepository {
           final listbook = await bookLocalDatasource.getBooks();
           return Right(listbook);
         } catch (e) {
-          return Left(ServerFailure());
+          return Left(ServerFailure(e.toString()));
         }
       },
     );

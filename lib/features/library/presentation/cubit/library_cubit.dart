@@ -16,7 +16,7 @@ class LibraryCubit extends Cubit<LibraryState> {
     final result = await _getBooksUseCase.call(NoParams());
 
     result.fold(
-      (l) => emit(GetAllBookErrorState("Gagal Mengambil data")),
+      (l) => emit(GetAllBookErrorState(l.message.toString())),
       (r) => emit(GetAllBookSuccessState(r)),
     );
   }
