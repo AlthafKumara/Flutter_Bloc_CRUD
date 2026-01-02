@@ -1,6 +1,6 @@
-import 'package:crud_clean_bloc/core/cache/local_storage.dart';
-import 'package:crud_clean_bloc/core/errors/exception.dart';
-import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+import '../../../../core/cache/local_storage.dart';
+import '../../../../core/errors/exception.dart';
+import '../models/get_books_model.dart';
 
 sealed class BookLocalDatasource {
   Future<List<GetBooksModel>> getBooks();

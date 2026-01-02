@@ -1,14 +1,12 @@
-import 'package:crud_clean_bloc/core/cache/local_storage.dart';
-import 'package:crud_clean_bloc/core/errors/failure.dart';
-import 'package:crud_clean_bloc/core/network/network_checker.dart';
-import 'package:crud_clean_bloc/features/library/data/datasources/book_local_datasource.dart';
-import 'package:crud_clean_bloc/features/library/data/datasources/book_remote_datasource.dart';
-
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
-
 import 'package:dartz/dartz.dart';
 
+import '../../../../core/cache/local_storage.dart';
+import '../../../../core/errors/failure.dart';
+import '../../../../core/network/network_checker.dart';
+import '../../domain/entities/book_entity.dart';
 import '../../domain/repositories/book_repository.dart';
+import '../datasources/book_local_datasource.dart';
+import '../datasources/book_remote_datasource.dart';
 
 class BooksRepositoryImpl implements BookRepository {
   final LocalStorage localStorage;

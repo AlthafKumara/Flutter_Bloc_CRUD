@@ -1,6 +1,7 @@
-import 'package:crud_clean_bloc/core/errors/failure.dart';
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../../../core/errors/failure.dart';
+import '../entities/book_entity.dart';
 
 abstract class BookRepository {
   Future<Either<Failure, BookEntity>> addBook(BookEntity book);

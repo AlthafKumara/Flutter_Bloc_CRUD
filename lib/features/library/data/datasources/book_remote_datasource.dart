@@ -1,7 +1,7 @@
-import 'package:crud_clean_bloc/core/api/api_url.dart';
-import 'package:crud_clean_bloc/core/errors/exception.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/api/api_url.dart';
+import '../../../../core/errors/exception.dart';
 import '../models/get_books_model.dart';
 
 sealed class BookRemoteDatasource {

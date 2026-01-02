@@ -1,5 +1,7 @@
+import 'package:crud_clean_bloc/configs/injector/injector_conf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -7,10 +9,17 @@ void main() async {
 
   await dotenv.load(fileName: ".env");
 
+  // =================== SUPABASE ===========================
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+
+  // =================== HIVE ===========================
+  await Hive.initFlutter();
+
+  // =================== INJECTOR ===========================
+  configureDepedencies();
 
   runApp(const MyApp());
 }

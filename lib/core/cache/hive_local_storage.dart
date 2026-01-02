@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-import 'package:crud_clean_bloc/core/cache/local_storage.dart';
+import 'local_storage.dart';
 
 class HiveLocalStorage implements LocalStorage {
   @override
