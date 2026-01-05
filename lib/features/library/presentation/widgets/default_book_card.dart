@@ -1,5 +1,5 @@
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
-import 'package:crud_clean_bloc/routes/app_routes_path.dart';
+import '../../domain/entities/book_entity.dart';
+import '../../../../routes/app_routes_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +10,9 @@ import '../../../../core/themes/app_text_style.dart';
 class DefaultBookCard extends StatelessWidget {
   final BookEntity book;
 
-  const DefaultBookCard({required this.book, super.key});
+  DefaultBookCard({required this.book, super.key});
+
+  
 
   @override
   Widget build(BuildContext context) {

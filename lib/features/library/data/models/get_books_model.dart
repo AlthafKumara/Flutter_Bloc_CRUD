@@ -2,21 +2,14 @@ import '../../domain/entities/book_entity.dart';
 
 class GetBooksModel extends BookEntity {
   GetBooksModel({
-    required int id,
-    required String title,
-    required String description,
-    required String author,
-    required String coverUrl,
-  }) : super(
-         id: id,
-         title: title,
-         description: description,
-         author: author,
-         coverUrl: coverUrl,
-       );
+    required super.id,
+    required super.title,
+    required super.description,
+    required super.author,
+    required super.coverUrl,
+  });
 
   factory GetBooksModel.fromJson(Map<String, dynamic> json) {
-    print(json);
     return GetBooksModel(
       id: json['id'],
       title: json['title'],

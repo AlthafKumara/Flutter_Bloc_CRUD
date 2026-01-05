@@ -1,6 +1,5 @@
-import 'package:crud_clean_bloc/configs/injector/injector_conf.dart';
-import 'package:crud_clean_bloc/routes/app_routes_conf.dart';
-import 'package:crud_clean_bloc/routes/app_routes_path.dart';
+import 'configs/injector/injector_conf.dart';
+import 'routes/app_routes_conf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,6 +23,7 @@ void main() async {
   // =================== INJECTOR ===========================
   configureDepedencies();
 
+  // =================== RUN APP ===========================
   runApp(const MyApp());
 }
 

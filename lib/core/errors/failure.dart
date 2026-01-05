@@ -18,3 +18,7 @@ class CacheFailure extends Failure {
 class NetworkFailure extends Failure {
   const NetworkFailure([String message = "Network error"]) : super(message);
 }
+
+class EmptyFailure extends Failure {
+  const EmptyFailure([String message = "Empty Data"]) : super(message);
+}

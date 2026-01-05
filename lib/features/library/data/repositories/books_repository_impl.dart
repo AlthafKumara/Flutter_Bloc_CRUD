@@ -1,4 +1,7 @@
-import 'package:crud_clean_bloc/core/errors/exception.dart';
+import 'package:crud_clean_bloc/features/library/data/models/create_books_model.dart';
+
+import '../../../../core/errors/exception.dart';
+import '../../domain/usecases/usecase_params.dart';
 
 import '../../../../core/cache/local_storage.dart';
 import '../../../../core/errors/failure.dart';
@@ -6,7 +9,7 @@ import '../../../../core/network/network_checker.dart';
 import '../datasources/book_local_datasource.dart';
 import '../datasources/book_remote_datasource.dart';
 
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
+import '../../domain/entities/book_entity.dart';
 
 import 'package:dartz/dartz.dart';
 
@@ -25,12 +28,26 @@ class BooksRepositoryImpl implements BookRepository {
     this.bookRemoteDatasource,
   );
   @override
-  Future<Either<Failure, BookEntity>> addBook(BookEntity book) {
-    throw UnimplementedError();
+  Future<Either<Failure, void>> addBook(CreateBookParams params) async {
+    try {
+      final model = CreateBooksModel(
+        title: params.title,
+        author: params.author,
+        cover: params.photoFile,
+        createdAt: DateTime.now(),
+        description: params.description,
+      );
+
+      final result = await bookRemoteDatasource.createBook(model);
+
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<Either<Failure, List<BookEntity>>> deleteBook(List<int> ids) {
+  Future<Either<Failure, void>> deleteBook(DeleteBookParams params) {
     throw UnimplementedError();
   }
 
@@ -66,7 +83,7 @@ class BooksRepositoryImpl implements BookRepository {
   }
 
   @override
-  Future<Either<Failure, BookEntity>> updateBook(BookEntity book, int id) {
+  Future<Either<Failure, void>> updateBook(UpdateBookParams params) {
     throw UnimplementedError();
   }
 }

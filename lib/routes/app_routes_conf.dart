@@ -1,11 +1,11 @@
-import 'package:crud_clean_bloc/configs/injector/injector_conf.dart';
-import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
-import 'package:crud_clean_bloc/features/library/presentation/cubit/library_cubit.dart';
-import 'package:crud_clean_bloc/features/library/presentation/pages/library_book_detail.dart';
-import 'package:crud_clean_bloc/features/library/presentation/pages/library_view.dart';
-import 'package:crud_clean_bloc/routes/app_routes_path.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../configs/injector/injector_conf.dart';
+import '../features/library/presentation/cubit/library_cubit.dart';
+import '../features/library/presentation/pages/library_book_detail.dart';
+import '../features/library/presentation/pages/library_view.dart';
+import 'app_routes_path.dart';
 
 class AppRoutesConf {
   GoRouter get router => _router;
@@ -23,8 +23,9 @@ class AppRoutesConf {
         routes: [
           GoRoute(
             path: AppRoutes.libraryBookDetail.path,
+            name: AppRoutes.libraryBookDetail.name,
             builder: (context, state) {
-              return LibraryBookDetail(book: state.extra as GetBooksModel);
+              return LibraryBookDetail();
             },
           ),
         ],
