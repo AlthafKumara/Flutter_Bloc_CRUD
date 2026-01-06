@@ -7,21 +7,27 @@ import '../../core/network/network_checker.dart';
 import '../../features/library/di/library_dependency.dart';
 import '../../routes/app_routes_conf.dart';
 
-final getIt = GetIt.I;
+final getIt = GetIt.instance;
+
 void configureDepedencies() {
-  LibraryDependency.init();
+  // ================= CORE =================
+  getIt.registerLazySingleton<InternetConnectionChecker>(
+    () => InternetConnectionChecker.instance,
+  );
 
-  getIt.registerLazySingleton(() => AppRoutesConf());
-
-  getIt.registerLazySingleton<LocalStorage>(() => HiveLocalStorage());
-  getIt.registerLazySingleton(() => HiveLocalStorage());
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<NetworkInfo>(
     () => NetworkInfo(
       internetConnectionChecker: getIt<InternetConnectionChecker>(),
     ),
   );
 
-  getIt.registerLazySingleton<InternetConnectionChecker>(
-    () => InternetConnectionChecker.instance,
-  );
+  getIt.registerLazySingleton<LocalStorage>(() => HiveLocalStorage());
+
+  getIt.registerLazySingleton<HiveLocalStorage>(() => HiveLocalStorage());
+
+  // ================= FEATURE =================
+  LibraryDependency.init();
+
+  // ================= ROUTER =================
+  getIt.registerLazySingleton(() => AppRoutesConf());
 }

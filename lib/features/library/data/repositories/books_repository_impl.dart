@@ -1,4 +1,5 @@
 import 'package:crud_clean_bloc/features/library/data/models/create_books_model.dart';
+import 'package:crud_clean_bloc/features/library/data/models/upload_book_cover_model.dart';
 
 import '../../../../core/errors/exception.dart';
 import '../../domain/usecases/usecase_params.dart';
@@ -33,16 +34,18 @@ class BooksRepositoryImpl implements BookRepository {
       final model = CreateBooksModel(
         title: params.title,
         author: params.author,
-        cover: params.photoFile,
         createdAt: DateTime.now(),
         description: params.description,
+        coverUrl: params.coverUrl,
       );
 
       final result = await bookRemoteDatasource.createBook(model);
 
       return Right(result);
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (_) {
+      return const Left(ServerFailure('Gagal menambahkan buku'));
     }
   }
 
@@ -65,7 +68,6 @@ class BooksRepositoryImpl implements BookRepository {
 
           return Right(listbook);
         } on ServerException catch (e) {
-          print(e.message);
           return Left(ServerFailure(e.message));
         } catch (e) {
           return Left(ServerFailure(e.toString()));
@@ -85,5 +87,26 @@ class BooksRepositoryImpl implements BookRepository {
   @override
   Future<Either<Failure, void>> updateBook(UpdateBookParams params) {
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadBookCover(
+    UploadBookCoverParams params,
+  ) async {
+    try {
+      final model = UploadBookCoverModel(
+        title: params.title,
+        cover: params.file,
+      );
+
+      final result = await bookRemoteDatasource.uploadBookCover(model);
+      print(result);
+
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (_) {
+      return const Left(ServerFailure('Gagal menambahkan buku'));
+    }
   }
 }

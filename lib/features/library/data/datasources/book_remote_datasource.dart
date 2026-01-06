@@ -1,4 +1,5 @@
 import 'package:crud_clean_bloc/features/library/data/models/create_books_model.dart';
+import 'package:crud_clean_bloc/features/library/data/models/upload_book_cover_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/api/api_url.dart';
@@ -8,6 +9,7 @@ import '../models/get_books_model.dart';
 sealed class BookRemoteDatasource {
   Future<List<GetBooksModel>> getBooks();
   Future<void> createBook(CreateBooksModel model);
+  Future<String> uploadBookCover(UploadBookCoverModel model);
 }
 
 class BookRemoteDatasourceImpl implements BookRemoteDatasource {
@@ -31,6 +33,22 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
     try {
       await ApiUrl.book.insert(model.toMap());
       return;
+    } on PostgrestException catch (e) {
+      throw ServerException(e.message);
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<String> uploadBookCover(UploadBookCoverModel model) async {
+    try {
+      final fileExt = model.cover.path.split('.').last;
+      final fileName = '${model.id}.$fileExt';
+      await ApiUrl.bookStorage.upload(fileName, model.cover);
+
+      final publicUrl = ApiUrl.bookStorage.getPublicUrl(fileName);
+      return publicUrl;
     } on PostgrestException catch (e) {
       throw ServerException(e.message);
     } catch (e) {

@@ -10,9 +10,7 @@ import '../../../../core/themes/app_text_style.dart';
 class DefaultBookCard extends StatelessWidget {
   final BookEntity book;
 
-  DefaultBookCard({required this.book, super.key});
-
-  
+  const DefaultBookCard({required this.book, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +49,7 @@ class DefaultBookCard extends StatelessWidget {
                   width: 1.w,
                 ),
                 image: DecorationImage(
-                  image: NetworkImage(book.coverUrl!),
+                  image: NetworkImage(book.coverUrl ?? ""),
                   fit: BoxFit.cover,
                 ),
               ),

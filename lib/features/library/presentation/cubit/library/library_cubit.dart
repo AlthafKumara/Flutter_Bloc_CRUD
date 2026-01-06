@@ -1,0 +1,71 @@
+import 'dart:io';
+
+import 'package:bloc/bloc.dart';
+import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
+import 'package:equatable/equatable.dart';
+import '../../../domain/usecases/create_book_usecase.dart';
+import '../../../domain/usecases/upload_book_cover_usecase.dart';
+import '../../../domain/usecases/usecase_params.dart';
+import '../../../../../core/usecases/usecase.dart';
+import '../../../domain/usecases/get_books_usecase.dart';
+
+part 'library_state.dart';
+
+class LibraryCubit extends Cubit<LibraryState> {
+  final GetBooksUseCase _getBooksUseCase;
+  final CreateBookUsecase _createBookUsecase;
+  final UploadBookCoverUsecase _uploadBookCoverUsecase;
+
+  LibraryCubit(
+    this._getBooksUseCase,
+    this._createBookUsecase,
+    this._uploadBookCoverUsecase,
+  ) : super(LibraryInitial());
+
+  // ================= GET ALL BOOK =================
+  Future<void> getAllBooks() async {
+    emit(GetAllBookLoadingState());
+
+    final result = await _getBooksUseCase.call(NoParams());
+
+    result.fold(
+      (failure) => emit(GetAllBookErrorState(failure.message.toString())),
+      (books) => emit(GetAllBookSuccessState(books)),
+    );
+  }
+
+  // ================= CREATE BOOK + COVER =================
+  Future<void> createBookWithCover({
+    required String title,
+    required String author,
+    required String description,
+    required File coverFile,
+  }) async {
+    emit(CreateBookLoadingState());
+
+    final uploadResult = await _uploadBookCoverUsecase.call(
+      UploadBookCoverParams(title: title, file: coverFile),
+    );
+
+    await uploadResult.fold(
+      (failure) async {
+        emit(UploadBookCoverErrorState(failure.message.toString()));
+      },
+      (coverUrl) async {
+        final createResult = await _createBookUsecase.call(
+          CreateBookParams(
+            title: title,
+            author: author,
+            description: description,
+            coverUrl: coverUrl, 
+          ),
+        );
+
+        createResult.fold(
+          (failure) => emit(CreateBookErrorState(failure.message.toString())),
+          (_) => emit(CreateBookSuccessState()),
+        );
+      },
+    );
+  }
+}

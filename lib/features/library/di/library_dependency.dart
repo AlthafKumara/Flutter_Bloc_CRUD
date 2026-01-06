@@ -1,3 +1,8 @@
+import 'package:crud_clean_bloc/core/service/image_picker_services.dart';
+import 'package:crud_clean_bloc/features/library/domain/usecases/create_book_usecase.dart';
+import 'package:crud_clean_bloc/features/library/domain/usecases/upload_book_cover_usecase.dart';
+import 'package:crud_clean_bloc/features/library/presentation/cubit/library_form/library_form_cubit.dart';
+
 import '../../../configs/injector/injector_conf.dart';
 import '../../../core/cache/hive_local_storage.dart';
 import '../../../core/cache/local_storage.dart';
@@ -7,16 +12,22 @@ import '../data/datasources/book_remote_datasource.dart';
 import '../data/repositories/books_repository_impl.dart';
 import '../domain/repositories/book_repository.dart';
 import '../domain/usecases/get_books_usecase.dart';
-import '../presentation/cubit/library_cubit.dart';
+import '../presentation/cubit/library/library_cubit.dart';
 
 class LibraryDependency {
   LibraryDependency._();
 
   static void init() {
-    getIt.registerFactory(() => LibraryCubit(getIt<GetBooksUseCase>()));
+    // ================= DATASOURCE =================
+    getIt.registerLazySingleton<BookRemoteDatasource>(
+      () => BookRemoteDatasourceImpl(),
+    );
 
-    getIt.registerLazySingleton(() => GetBooksUseCase(getIt<BookRepository>()));
+    getIt.registerLazySingleton<BookLocalDatasource>(
+      () => BookLocalDatasourceImpl(localStorage: getIt<LocalStorage>()),
+    );
 
+    // ================= REPOSITORY =================
     getIt.registerLazySingleton<BookRepository>(
       () => BooksRepositoryImpl(
         getIt<HiveLocalStorage>(),
@@ -26,12 +37,27 @@ class LibraryDependency {
       ),
     );
 
-    getIt.registerLazySingleton<BookLocalDatasource>(
-      () => BookLocalDatasourceImpl(localStorage: getIt<LocalStorage>()),
+    // ================= USECASE =================
+    getIt.registerLazySingleton(() => GetBooksUseCase(getIt<BookRepository>()));
+
+    getIt.registerLazySingleton(
+      () => CreateBookUsecase(getIt<BookRepository>()),
+    );
+    getIt.registerLazySingleton(
+      () => UploadBookCoverUsecase(getIt<BookRepository>()),
     );
 
-    getIt.registerLazySingleton<BookRemoteDatasource>(
-      () => BookRemoteDatasourceImpl(),
+    // ================================= SERVICE =================================
+    getIt.registerLazySingleton<ImagePickerService>(() => ImagePickerService());
+    // ================= CUBIT (PALING AKHIR) =================
+    getIt.registerFactory(
+      () => LibraryCubit(
+        getIt<GetBooksUseCase>(),
+        getIt<CreateBookUsecase>(),
+        getIt<UploadBookCoverUsecase>(),
+      ),
     );
+
+    getIt.registerFactory(() => LibraryFormCubit(getIt<ImagePickerService>()));
   }
 }

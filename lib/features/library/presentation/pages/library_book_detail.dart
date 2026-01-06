@@ -1,11 +1,12 @@
 import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
+import 'package:crud_clean_bloc/routes/app_routes_path.dart';
+import 'package:crud_clean_bloc/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
-
-import 'package:go_router/go_router.dart';
 
 class LibraryBookDetail extends StatelessWidget {
   const LibraryBookDetail({super.key});
@@ -13,6 +14,7 @@ class LibraryBookDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bookdata = GoRouterState.of(context).extra as BookEntity;
+
     return Scaffold(
       backgroundColor: AppColor.neutral100,
       appBar: AppBar(
@@ -26,7 +28,12 @@ class LibraryBookDetail extends StatelessWidget {
         actionsPadding: EdgeInsets.symmetric(horizontal: 16.w),
         actions: [
           GestureDetector(
-            onTap: () {}, // ROUTE KE FORM BOOK EDIT
+            onTap: () {
+              context.pushNamed(
+                AppRoutes.libraryFormBook.name,
+                extra: bookdata,
+              );
+            }, // ROUTE KE FORM BOOK EDIT
             child: Container(
               margin: EdgeInsets.only(right: 16.w),
               child: Icon(Icons.edit, color: AppColor.primary500),
@@ -35,7 +42,16 @@ class LibraryBookDetail extends StatelessWidget {
 
           GestureDetector(
             child: Icon(Icons.delete, color: AppColor.danger500),
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (_) => CustomDialog(
+                  title: "Hapus Buku",
+                  message: "Apakah anda yakin ingin menghapus buku ini ?",
+                  onTap: () {},
+                ),
+              );
+            },
           ),
         ],
       ),

@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import '../../domain/entities/book_entity.dart';
 
 class CreateBooksModel extends BookEntity {
-  final File cover;
   CreateBooksModel({
     required super.title,
     required super.author,
     required super.description,
     required super.createdAt,
-    required this.cover,
+    required super.coverUrl,
   });
 
   factory CreateBooksModel.fromJson(Map<String, dynamic> json) {
@@ -18,16 +15,15 @@ class CreateBooksModel extends BookEntity {
       author: json['author'],
       description: json['description'],
       createdAt: json['created_at'],
-      cover: json['cover_url'],
+      coverUrl: json['cover_url'],
     );
   }
 
   Map<String, dynamic> toMap() => {
-    'id': id,
     'title': title,
     'author': author,
     'description': description,
-    'created_at': createdAt,
-    'cover_url': cover,
+    'created_at': createdAt?.toIso8601String(),
+    'cover_url': coverUrl,
   };
 }

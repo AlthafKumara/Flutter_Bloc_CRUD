@@ -9,4 +9,5 @@ abstract class BookRepository {
   Future<Either<Failure, List<BookEntity>>> getBooks();
   Future<Either<Failure, void>> updateBook(UpdateBookParams params);
   Future<Either<Failure, void>> deleteBook(DeleteBookParams params);
+  Future<Either<Failure, String>> uploadBookCover(UploadBookCoverParams params);
 }

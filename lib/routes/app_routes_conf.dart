@@ -1,8 +1,12 @@
+import 'package:crud_clean_bloc/core/service/image_picker_services.dart';
+import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
+import 'package:crud_clean_bloc/features/library/presentation/cubit/library_form/library_form_cubit.dart';
+import 'package:crud_clean_bloc/features/library/presentation/pages/library_form_book.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../configs/injector/injector_conf.dart';
-import '../features/library/presentation/cubit/library_cubit.dart';
+import '../features/library/presentation/cubit/library/library_cubit.dart';
 import '../features/library/presentation/pages/library_book_detail.dart';
 import '../features/library/presentation/pages/library_view.dart';
 import 'app_routes_path.dart';
@@ -26,6 +30,26 @@ class AppRoutesConf {
             name: AppRoutes.libraryBookDetail.name,
             builder: (context, state) {
               return LibraryBookDetail();
+            },
+          ),
+          GoRoute(
+            path: AppRoutes.libraryFormBook.path,
+            name: AppRoutes.libraryFormBook.name,
+            builder: (context, state) {
+              final book = state.extra as BookEntity?;
+
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (_) =>
+                        LibraryFormCubit(getIt<ImagePickerService>())
+                          ..loadFromBook(book),
+                  ),
+                  BlocProvider(create: (_) => getIt<LibraryCubit>()),
+                ],
+
+                child: LibraryFormBook(),
+              );
             },
           ),
         ],
