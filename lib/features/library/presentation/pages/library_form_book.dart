@@ -1,4 +1,4 @@
-import 'package:crud_clean_bloc/routes/app_routes_path.dart';
+import 'package:crud_clean_bloc/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,8 +25,10 @@ class LibraryFormBook extends StatelessWidget {
     if (!bookFormKey.currentState!.validate()) return;
 
     if (formState.newCoverFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cover book wajib diupload')),
+      CustomSnackbar.show(
+        context,
+        message: 'Cover harus diisi',
+        backgroundColor: AppColor.danger600,
       );
       return;
     }
@@ -49,16 +51,21 @@ class LibraryFormBook extends StatelessWidget {
               ? state.message
               : (state as CreateBookErrorState).message;
 
-          ScaffoldMessenger.of(
+          CustomSnackbar.show(
             context,
-          ).showSnackBar(SnackBar(content: Text(message)));
+            message: message,
+            backgroundColor: AppColor.danger600,
+          );
         }
 
         if (state is CreateBookSuccessState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Book berhasil ditambahkan')),
+          context.read<LibraryCubit>().getAllBooks();
+          CustomSnackbar.show(
+            context,
+            message: "Berhasil menambahkan buku",
+            backgroundColor: AppColor.success500,
           );
-          context.pushReplacementNamed(AppRoutes.libraryView.name);
+          context.pop();
         }
       },
       child: BlocBuilder<LibraryFormCubit, LibraryFormState>(

@@ -53,3 +53,21 @@ class UploadBookCoverErrorState extends LibraryState {
   @override
   List<Object> get props => [message];
 }
+
+//  ============================ DELETE BOOK ===============================
+
+class DeleteBookLoadingState extends LibraryState {}
+
+class DeleteBookSuccessState extends LibraryState {
+  final String message;
+  const DeleteBookSuccessState(this.message);
+  @override
+  List<Object> get props => [message];
+}
+
+class DeleteBookErrorState extends LibraryState {
+  final String message;
+  const DeleteBookErrorState(this.message);
+  @override
+  List<Object> get props => [message];
+}

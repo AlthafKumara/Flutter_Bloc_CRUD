@@ -16,9 +16,10 @@ class DeleteBooksUsecase implements UseCase<void, Params> {
 }
 
 class Params extends Equatable {
-  final List<int> ids;
+  final String coverUrl;
+  final int id;
 
-  const Params({required this.ids});
+  const Params({required this.id, required this.coverUrl});
   @override
-  List<Object?> get props => [ids];
+  List<Object?> get props => [id, coverUrl];
 }

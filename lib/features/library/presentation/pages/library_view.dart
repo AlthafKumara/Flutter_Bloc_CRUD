@@ -61,6 +61,11 @@ class LibraryView extends StatelessWidget {
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColor.primary500,
+        onPressed: () => context.read<LibraryCubit>().getAllBooks(),
+        child: const Icon(Icons.refresh, color: AppColor.neutral100),
+      ),
     );
   }
 

@@ -1,4 +1,3 @@
-import 'package:crud_clean_bloc/core/service/image_picker_services.dart';
 import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
 import 'package:crud_clean_bloc/features/library/presentation/cubit/library_form/library_form_cubit.dart';
 import 'package:crud_clean_bloc/features/library/presentation/pages/library_form_book.dart';
@@ -29,7 +28,11 @@ class AppRoutesConf {
             path: AppRoutes.libraryBookDetail.path,
             name: AppRoutes.libraryBookDetail.name,
             builder: (context, state) {
-              return LibraryBookDetail();
+              final book = state.extra as BookEntity;
+              return BlocProvider.value(
+                value: getIt<LibraryCubit>(),
+                child: LibraryBookDetail(book: book),
+              );
             },
           ),
           GoRoute(
@@ -42,10 +45,9 @@ class AppRoutesConf {
                 providers: [
                   BlocProvider(
                     create: (_) =>
-                        LibraryFormCubit(getIt<ImagePickerService>())
-                          ..loadFromBook(book),
+                        getIt<LibraryFormCubit>()..loadFromBook(book),
                   ),
-                  BlocProvider(create: (_) => getIt<LibraryCubit>()),
+                  BlocProvider.value(value: getIt<LibraryCubit>()),
                 ],
 
                 child: LibraryFormBook(),

@@ -1,5 +1,6 @@
 import 'package:crud_clean_bloc/core/service/image_picker_services.dart';
 import 'package:crud_clean_bloc/features/library/domain/usecases/create_book_usecase.dart';
+import 'package:crud_clean_bloc/features/library/domain/usecases/delete_books_usecase.dart';
 import 'package:crud_clean_bloc/features/library/domain/usecases/upload_book_cover_usecase.dart';
 import 'package:crud_clean_bloc/features/library/presentation/cubit/library_form/library_form_cubit.dart';
 
@@ -46,6 +47,9 @@ class LibraryDependency {
     getIt.registerLazySingleton(
       () => UploadBookCoverUsecase(getIt<BookRepository>()),
     );
+    getIt.registerLazySingleton(
+      () => DeleteBooksUsecase(getIt<BookRepository>()),
+    );
 
     // ================================= SERVICE =================================
     getIt.registerLazySingleton<ImagePickerService>(() => ImagePickerService());
@@ -55,6 +59,7 @@ class LibraryDependency {
         getIt<GetBooksUseCase>(),
         getIt<CreateBookUsecase>(),
         getIt<UploadBookCoverUsecase>(),
+        getIt<DeleteBooksUsecase>(),
       ),
     );
 

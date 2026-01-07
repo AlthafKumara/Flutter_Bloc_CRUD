@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
+import 'package:crud_clean_bloc/features/library/domain/usecases/delete_books_usecase.dart';
 import 'package:equatable/equatable.dart';
 import '../../../domain/usecases/create_book_usecase.dart';
 import '../../../domain/usecases/upload_book_cover_usecase.dart';
@@ -15,11 +16,13 @@ class LibraryCubit extends Cubit<LibraryState> {
   final GetBooksUseCase _getBooksUseCase;
   final CreateBookUsecase _createBookUsecase;
   final UploadBookCoverUsecase _uploadBookCoverUsecase;
+  final DeleteBooksUsecase _deleteBooksUsecase;
 
   LibraryCubit(
     this._getBooksUseCase,
     this._createBookUsecase,
     this._uploadBookCoverUsecase,
+    this._deleteBooksUsecase,
   ) : super(LibraryInitial());
 
   // ================= GET ALL BOOK =================
@@ -57,7 +60,7 @@ class LibraryCubit extends Cubit<LibraryState> {
             title: title,
             author: author,
             description: description,
-            coverUrl: coverUrl, 
+            coverUrl: coverUrl,
           ),
         );
 
@@ -66,6 +69,20 @@ class LibraryCubit extends Cubit<LibraryState> {
           (_) => emit(CreateBookSuccessState()),
         );
       },
+    );
+  }
+
+  Future<void> deleteBook({required int id, required String coverUrl}) async {
+    print("DELETE DIJALANKAN");
+    emit(DeleteBookLoadingState());
+
+    final result = await _deleteBooksUsecase.call(
+      DeleteBookParams(id: id, coverUrl: coverUrl),
+    );
+
+    result.fold(
+      (failure) => emit(DeleteBookErrorState(failure.message.toString())),
+      (_) => emit(DeleteBookSuccessState("Buku berhasil dihapus")),
     );
   }
 }

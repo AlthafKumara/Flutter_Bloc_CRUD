@@ -44,10 +44,7 @@ class CustomDialog extends StatelessWidget {
           ),
         ),
         ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            onTap;
-          },
+          onPressed: onTap,
           style: ElevatedButton.styleFrom(backgroundColor: AppColor.neutral100),
           child: Text(
             'OK',
