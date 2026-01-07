@@ -1,3 +1,5 @@
+import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+
 import '../models/create_books_model.dart';
 import '../models/delete_book_model.dart';
 import '../models/update_books_model.dart';
@@ -60,7 +62,6 @@ class BooksRepositoryImpl implements BookRepository {
 
       return Right(result);
     } on ServerException catch (e) {
-      
       return Left(ServerFailure(e.message));
     } catch (_) {
       return const Left(ServerFailure('Gagal menghapus buku'));
@@ -73,11 +74,11 @@ class BooksRepositoryImpl implements BookRepository {
       connected: () async {
         try {
           final listbook = await bookRemoteDatasource.getBooks();
-          // await localStorage.save(
-          //   key: "library",
-          //   boxName: "book",
-          //   value: listbook,
-          // );
+          await localStorage.save(
+            key: "library",
+            boxName: "book",
+            value: GetBooksModel.toMapList(listbook.cast<GetBooksModel>()),
+          );
 
           return Right(listbook);
         } on ServerException catch (e) {
@@ -90,8 +91,10 @@ class BooksRepositoryImpl implements BookRepository {
         try {
           final listbook = await bookLocalDatasource.getBooks();
           return Right(listbook);
-        } catch (e) {
-          return Left(ServerFailure(e.toString()));
+        } on CacheException catch (e) {
+          return Left(ServerFailure(e.message));
+        } catch (_) {
+          return const Left(ServerFailure('Gagal mengupdate buku'));
         }
       },
     );
@@ -129,7 +132,6 @@ class BooksRepositoryImpl implements BookRepository {
       );
 
       final result = await bookRemoteDatasource.uploadBookCover(model);
-      
 
       return Right(result);
     } on ServerException catch (e) {

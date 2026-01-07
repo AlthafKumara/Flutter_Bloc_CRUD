@@ -61,6 +61,15 @@ class DefaultBookCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
+              child: book.coverUrl == null || book.coverUrl == ""
+                  ? Center(
+                      child: Icon(
+                        Icons.cloud_off_outlined,
+                        size: 20.sp,
+                        color: AppColor.neutral400,
+                      ),
+                    )
+                  : Container(),
             ),
             SizedBox(width: 12.w),
             Expanded(

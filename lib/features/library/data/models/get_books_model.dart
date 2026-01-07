@@ -1,13 +1,39 @@
+// ignore_for_file: annotate_overrides
+
+import 'package:hive_flutter/adapters.dart';
+
 import '../../domain/entities/book_entity.dart';
 
+part 'get_books_model.g.dart';
+@HiveType(typeId: 0)
 class GetBooksModel extends BookEntity {
+  @HiveField(0)
+  final int id;
+
+  @HiveField(1)
+  final String title;
+
+  @HiveField(2)
+  final String description;
+
+  @HiveField(3)
+  final String author;
+
+  @HiveField(4)
+  final String coverUrl;
   GetBooksModel({
-    required super.id,
-    required super.title,
-    required super.description,
-    required super.author,
-    required super.coverUrl,
-  });
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.author,
+    required this.coverUrl,
+  }) : super(
+    id: id,
+    title: title,
+    description: description,
+    author: author,
+    coverUrl: coverUrl,
+  );
 
   factory GetBooksModel.fromJson(Map<String, dynamic> json) {
     return GetBooksModel(

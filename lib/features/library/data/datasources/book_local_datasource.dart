@@ -17,9 +17,18 @@ class BookLocalDatasourceImpl implements BookLocalDatasource {
     try {
       final response = await localStorage.load(key: "library", boxName: "book");
 
-      return GetBooksModel.fromJsonList(response);
+      if (response == null) throw CacheException('Data buku tidak ditemukan');
+      if (response is! List) throw CacheException('Data buku tidak valid');
+
+      final List<Map<String, dynamic>> safeList = response
+          .map<Map<String, dynamic>>((e) {
+            return Map<String, dynamic>.from(e as Map);
+          })
+          .toList();
+
+      return GetBooksModel.fromJsonList(safeList);
     } catch (e) {
-      throw CacheException();
+      throw CacheException(e.toString());
     }
   }
 }

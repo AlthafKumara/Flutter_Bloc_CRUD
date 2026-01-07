@@ -13,8 +13,6 @@ class HiveLocalStorage implements LocalStorage {
       return result;
     } catch (_) {
       rethrow;
-    } finally {
-      box.close();
     }
   }
 
@@ -31,8 +29,6 @@ class HiveLocalStorage implements LocalStorage {
       return;
     } catch (_) {
       rethrow;
-    } finally {
-      box.close();
     }
   }
 
@@ -45,8 +41,6 @@ class HiveLocalStorage implements LocalStorage {
       return;
     } catch (_) {
       rethrow;
-    } finally {
-      box.close();
     }
   }
 }
