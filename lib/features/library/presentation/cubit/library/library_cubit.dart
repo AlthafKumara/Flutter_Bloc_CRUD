@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
-import 'package:crud_clean_bloc/features/library/domain/usecases/delete_books_usecase.dart';
-import 'package:crud_clean_bloc/features/library/domain/usecases/update_book_usecase.dart';
+import '../../../domain/entities/book_entity.dart';
+import '../../../domain/usecases/delete_books_usecase.dart';
+import '../../../domain/usecases/update_book_usecase.dart';
 import 'package:equatable/equatable.dart';
 import '../../../domain/usecases/create_book_usecase.dart';
 import '../../../domain/usecases/upload_book_cover_usecase.dart';

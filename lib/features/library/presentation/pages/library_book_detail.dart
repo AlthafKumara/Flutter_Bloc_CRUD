@@ -1,9 +1,9 @@
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
-import 'package:crud_clean_bloc/features/library/presentation/cubit/library/library_cubit.dart';
-import 'package:crud_clean_bloc/features/library/presentation/widgets/container_cover.dart';
-import 'package:crud_clean_bloc/routes/app_routes_path.dart';
-import 'package:crud_clean_bloc/widgets/custom_dialog.dart';
-import 'package:crud_clean_bloc/widgets/custom_snackbar.dart';
+import '../../domain/entities/book_entity.dart';
+import '../cubit/library/library_cubit.dart';
+import '../widgets/container_cover.dart';
+import '../../../../routes/app_routes_path.dart';
+import '../../../../widgets/custom_dialog.dart';
+import '../../../../widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

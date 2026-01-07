@@ -1,4 +1,4 @@
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
+import '../../domain/entities/book_entity.dart';
 
 class UpdateBooksModel extends BookEntity {
   UpdateBooksModel({

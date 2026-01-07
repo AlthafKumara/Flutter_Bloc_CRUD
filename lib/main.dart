@@ -1,10 +1,11 @@
-import 'configs/injector/injector_conf.dart';
-import 'routes/app_routes_conf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'configs/injector/injector_conf.dart';
+import 'routes/app_routes_conf.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

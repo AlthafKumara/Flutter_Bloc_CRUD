@@ -1,4 +1,4 @@
-import 'package:crud_clean_bloc/features/library/presentation/cubit/library/library_cubit.dart';
+import '../cubit/library/library_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/book_entity.dart';

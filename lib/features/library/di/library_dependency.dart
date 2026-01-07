@@ -1,9 +1,9 @@
-import 'package:crud_clean_bloc/core/service/image_picker_services.dart';
-import 'package:crud_clean_bloc/features/library/domain/usecases/create_book_usecase.dart';
-import 'package:crud_clean_bloc/features/library/domain/usecases/delete_books_usecase.dart';
-import 'package:crud_clean_bloc/features/library/domain/usecases/update_book_usecase.dart';
-import 'package:crud_clean_bloc/features/library/domain/usecases/upload_book_cover_usecase.dart';
-import 'package:crud_clean_bloc/features/library/presentation/cubit/library_form/library_form_cubit.dart';
+import '../../../core/service/image_picker_services.dart';
+import '../domain/usecases/create_book_usecase.dart';
+import '../domain/usecases/delete_books_usecase.dart';
+import '../domain/usecases/update_book_usecase.dart';
+import '../domain/usecases/upload_book_cover_usecase.dart';
+import '../presentation/cubit/library_form/library_form_cubit.dart';
 
 import '../../../configs/injector/injector_conf.dart';
 import '../../../core/cache/hive_local_storage.dart';

@@ -1,4 +1,4 @@
-import 'package:crud_clean_bloc/routes/app_routes_path.dart';
+import '../../../../routes/app_routes_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

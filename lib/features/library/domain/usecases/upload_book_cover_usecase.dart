@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:crud_clean_bloc/core/errors/failure.dart';
-import 'package:crud_clean_bloc/core/usecases/usecase.dart';
-import 'package:crud_clean_bloc/features/library/domain/repositories/book_repository.dart';
+import '../../../../core/errors/failure.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../repositories/book_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 

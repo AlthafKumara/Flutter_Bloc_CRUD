@@ -1,6 +1,6 @@
-import 'package:crud_clean_bloc/core/themes/app_color.dart';
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
-import 'package:crud_clean_bloc/features/library/presentation/cubit/library_form/library_form_state.dart';
+import '../../../../core/themes/app_color.dart';
+import '../../domain/entities/book_entity.dart';
+import '../cubit/library_form/library_form_state.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';

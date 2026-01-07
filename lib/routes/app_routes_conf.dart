@@ -1,6 +1,6 @@
-import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
-import 'package:crud_clean_bloc/features/library/presentation/cubit/library_form/library_form_cubit.dart';
-import 'package:crud_clean_bloc/features/library/presentation/pages/library_form_book.dart';
+import '../features/library/domain/entities/book_entity.dart';
+import '../features/library/presentation/cubit/library_form/library_form_cubit.dart';
+import '../features/library/presentation/pages/library_form_book.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
