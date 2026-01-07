@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
@@ -22,15 +20,15 @@ class Params extends Equatable {
   final String title;
   final String description;
   final String author;
-  File? photoFile;
+  final String coverUrl;
 
-  Params({
+  const Params({
     required this.id,
     required this.title,
     required this.description,
     required this.author,
-    this.photoFile,
+    required this.coverUrl,
   });
   @override
-  List<Object?> get props => [id, title, description, author, photoFile];
+  List<Object?> get props => [id, title, description, author, coverUrl];
 }

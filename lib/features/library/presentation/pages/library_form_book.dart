@@ -1,4 +1,5 @@
-import 'package:crud_clean_bloc/widgets/custom_snackbar.dart';
+import '../widgets/container_cover.dart';
+import '../../../../widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +20,7 @@ class LibraryFormBook extends StatelessWidget {
   final bookFormKey = GlobalKey<FormState>();
   final validator = Validator();
 
-  void submit(BuildContext context) {
+  void submitAdd(BuildContext context) {
     final formState = context.read<LibraryFormCubit>().state;
 
     if (!bookFormKey.currentState!.validate()) return;
@@ -41,6 +42,27 @@ class LibraryFormBook extends StatelessWidget {
     );
   }
 
+  void submitUpdate(
+    BuildContext context, {
+    required int id,
+    required String oldCoverUrl,
+  }) {
+    
+    final formState = context.read<LibraryFormCubit>().state;
+
+    if (!bookFormKey.currentState!.validate()) return;
+
+    context.read<LibraryCubit>().updateBookWithOptionalCover(
+      id: id,
+      title: formState.title,
+      author: formState.author,
+      oldCoverUrl: oldCoverUrl,
+      description: formState.description,
+
+      newCoverFile: formState.newCoverFile,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<LibraryCubit, LibraryState>(
@@ -59,13 +81,21 @@ class LibraryFormBook extends StatelessWidget {
         }
 
         if (state is CreateBookSuccessState) {
-          context.read<LibraryCubit>().getAllBooks();
           CustomSnackbar.show(
             context,
             message: "Berhasil menambahkan buku",
             backgroundColor: AppColor.success500,
           );
-          context.pop();
+          context.pop(true);
+        }
+        if (state is UpdateBookSuccessState) {
+          CustomSnackbar.show(
+            context,
+            message: "Berhasil Update Buku ",
+            backgroundColor: AppColor.success500,
+          );
+          context.pop(true);
+          context.pop(true);
         }
       },
       child: BlocBuilder<LibraryFormCubit, LibraryFormState>(
@@ -88,7 +118,7 @@ class LibraryFormBook extends StatelessWidget {
                       height: 300,
                       color: AppColor.neutral250,
                       alignment: Alignment.center,
-                      child: _buildCover(state, bookdata),
+                      child: ContainerCover(state: state, book: bookdata),
                     ),
                   ),
                   Padding(
@@ -131,35 +161,23 @@ class LibraryFormBook extends StatelessWidget {
             bottomNavigationBar: Padding(
               padding: EdgeInsets.all(16.w),
               child: CustomButtonLarge.primarylarge(
-                text: 'Submit',
-                onPressed: () => submit(context),
+                text: bookdata != null ? 'Update' : 'Submit',
+                onPressed: () {
+                  if (bookdata != null) {
+                    submitUpdate(
+                      context,
+                      id: bookdata.id!,
+                      oldCoverUrl: bookdata.coverUrl!,
+                    );
+                  } else {
+                    submitAdd(context);
+                  }
+                },
               ),
             ),
           );
         },
       ),
-    );
-  }
-
-  Widget _buildCover(LibraryFormState state, final BookEntity? book) {
-    final file = state.newCoverFile;
-
-    return Container(
-      width: 180.w,
-      height: 280.h,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.r),
-        color: AppColor.neutral400.withValues(alpha: 0.5),
-        image: file != null
-            ? DecorationImage(fit: BoxFit.cover, image: FileImage(file))
-            : book?.coverUrl != null
-            ? DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(book!.coverUrl!),
-              )
-            : null,
-      ),
-      child: file != null ? null : Icon(Icons.add, size: 20.sp),
     );
   }
 }

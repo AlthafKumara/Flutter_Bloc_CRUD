@@ -1,5 +1,6 @@
 import 'package:crud_clean_bloc/features/library/data/models/create_books_model.dart';
 import 'package:crud_clean_bloc/features/library/data/models/delete_book_model.dart';
+import 'package:crud_clean_bloc/features/library/data/models/update_books_model.dart';
 import 'package:crud_clean_bloc/features/library/data/models/upload_book_cover_model.dart';
 
 import '../../../../core/errors/exception.dart';
@@ -59,7 +60,7 @@ class BooksRepositoryImpl implements BookRepository {
 
       return Right(result);
     } on ServerException catch (e) {
-      print(e.message);
+      
       return Left(ServerFailure(e.message));
     } catch (_) {
       return const Left(ServerFailure('Gagal menghapus buku'));
@@ -97,8 +98,24 @@ class BooksRepositoryImpl implements BookRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updateBook(UpdateBookParams params) {
-    throw UnimplementedError();
+  Future<Either<Failure, void>> updateBook(UpdateBookParams params) async {
+    try {
+      final model = UpdateBooksModel(
+        id: params.id,
+        title: params.title,
+        author: params.author,
+        description: params.description,
+        coverUrl: params.coverUrl,
+      );
+
+      final result = await bookRemoteDatasource.updateBook(model);
+
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (_) {
+      return const Left(ServerFailure('Gagal mengupdate buku'));
+    }
   }
 
   @override
@@ -112,7 +129,7 @@ class BooksRepositoryImpl implements BookRepository {
       );
 
       final result = await bookRemoteDatasource.uploadBookCover(model);
-      print(result);
+      
 
       return Right(result);
     } on ServerException catch (e) {

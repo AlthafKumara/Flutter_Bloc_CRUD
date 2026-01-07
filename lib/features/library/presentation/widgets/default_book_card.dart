@@ -1,3 +1,6 @@
+import 'package:crud_clean_bloc/features/library/presentation/cubit/library/library_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/entities/book_entity.dart';
 import '../../../../routes/app_routes_path.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +18,15 @@ class DefaultBookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () {},
+      onTap: () async {
+        final result = await context.pushNamed(
+          AppRoutes.libraryBookDetail.name,
+          extra: book,
+        );
 
-      onTap: () {
-        context.pushNamed(AppRoutes.libraryBookDetail.name, extra: book);
+        if (result == true) {
+          context.read<LibraryCubit>().getAllBooks();
+        }
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 16.h),

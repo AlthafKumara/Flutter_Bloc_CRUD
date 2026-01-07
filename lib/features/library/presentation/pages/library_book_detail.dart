@@ -1,5 +1,6 @@
 import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
 import 'package:crud_clean_bloc/features/library/presentation/cubit/library/library_cubit.dart';
+import 'package:crud_clean_bloc/features/library/presentation/widgets/container_cover.dart';
 import 'package:crud_clean_bloc/routes/app_routes_path.dart';
 import 'package:crud_clean_bloc/widgets/custom_dialog.dart';
 import 'package:crud_clean_bloc/widgets/custom_snackbar.dart';
@@ -37,7 +38,7 @@ class LibraryBookDetail extends StatelessWidget {
             backgroundColor: AppColor.success500,
           );
 
-          context.pop();
+          context.pop(true);
         }
       },
       builder: (context, state) {
@@ -54,11 +55,15 @@ class LibraryBookDetail extends StatelessWidget {
             actionsPadding: EdgeInsets.symmetric(horizontal: 16.w),
             actions: [
               GestureDetector(
-                onTap: () {
-                  context.pushNamed(
+                onTap: () async {
+                  final result = await context.pushNamed(
                     AppRoutes.libraryFormBook.name,
                     extra: bookdata,
                   );
+
+                  if (result == true) {
+                    context.read<LibraryCubit>().getAllBooks();
+                  }
                 },
                 child: Container(
                   margin: EdgeInsets.only(right: 16.w),
@@ -95,20 +100,7 @@ class LibraryBookDetail extends StatelessWidget {
                   width: 395.w,
                   height: 320.h,
                   color: AppColor.neutral250,
-                  child: Center(
-                    child: Container(
-                      width: 180.w,
-                      height: 280.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        color: AppColor.neutral400.withValues(alpha: 0.5),
-                        image: DecorationImage(
-                          image: NetworkImage(bookdata.coverUrl!),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: Center(child: ContainerCover(book: bookdata)),
                 ),
 
                 Padding(

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:crud_clean_bloc/features/library/domain/entities/book_entity.dart';
 import 'package:crud_clean_bloc/features/library/domain/usecases/delete_books_usecase.dart';
+import 'package:crud_clean_bloc/features/library/domain/usecases/update_book_usecase.dart';
 import 'package:equatable/equatable.dart';
 import '../../../domain/usecases/create_book_usecase.dart';
 import '../../../domain/usecases/upload_book_cover_usecase.dart';
@@ -17,12 +18,14 @@ class LibraryCubit extends Cubit<LibraryState> {
   final CreateBookUsecase _createBookUsecase;
   final UploadBookCoverUsecase _uploadBookCoverUsecase;
   final DeleteBooksUsecase _deleteBooksUsecase;
+  final UpdateBookUsecase _updateBookUsecase;
 
   LibraryCubit(
     this._getBooksUseCase,
     this._createBookUsecase,
     this._uploadBookCoverUsecase,
     this._deleteBooksUsecase,
+    this._updateBookUsecase,
   ) : super(LibraryInitial());
 
   // ================= GET ALL BOOK =================
@@ -72,8 +75,51 @@ class LibraryCubit extends Cubit<LibraryState> {
     );
   }
 
+  Future<void> updateBookWithOptionalCover({
+    required int id,
+    required String title,
+    required String author,
+    required String description,
+    required String oldCoverUrl,
+    File? newCoverFile,
+  }) async {
+    emit(UpdateBookLoadingState());
+
+    String coverUrl = oldCoverUrl;
+
+    if (newCoverFile != null) {
+      final uploadResult = await _uploadBookCoverUsecase.call(
+        UploadBookCoverParams(title: title, file: newCoverFile),
+      );
+
+      final uploadEither = await uploadResult.fold((failure) async {
+        emit(UploadBookCoverErrorState(failure.message));
+        return null;
+      }, (uploadedUrl) async => uploadedUrl);
+
+      if (uploadEither == null) return;
+
+      coverUrl = uploadEither;
+    }
+
+    final updateResult = await _updateBookUsecase.call(
+      UpdateBookParams(
+        id: id,
+        title: title,
+        author: author,
+        description: description,
+        coverUrl: coverUrl,
+      ),
+    );
+
+    updateResult.fold(
+      (failure) => emit(UpdateBookErrorState(failure.message)),
+      (_) => emit(UpdateBookSuccessState("Buku berhasil diupdate")),
+    );
+  }
+
   Future<void> deleteBook({required int id, required String coverUrl}) async {
-    print("DELETE DIJALANKAN");
+    
     emit(DeleteBookLoadingState());
 
     final result = await _deleteBooksUsecase.call(

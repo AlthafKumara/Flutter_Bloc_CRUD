@@ -11,8 +11,19 @@ import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
 import '../widgets/default_book_card.dart';
 
-class LibraryView extends StatelessWidget {
+class LibraryView extends StatefulWidget {
   const LibraryView({super.key});
+
+  @override
+  State<LibraryView> createState() => _LibraryViewState();
+}
+
+class _LibraryViewState extends State<LibraryView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<LibraryCubit>().getAllBooks();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +45,14 @@ class LibraryView extends StatelessWidget {
             color: AppColor.primary500,
             text: 'Add Book',
             isLoading: false,
-            onPressed: () {
-              context.pushNamed(AppRoutes.libraryFormBook.name);
+            onPressed: () async {
+              final result = await context.pushNamed(
+                AppRoutes.libraryFormBook.name,
+              );
+
+              if (result == true) {
+                context.read<LibraryCubit>().getAllBooks();
+              }
             },
             prefixicon: SizedBox(
               height: 20.w,
@@ -50,7 +67,9 @@ class LibraryView extends StatelessWidget {
         child: BlocBuilder<LibraryCubit, LibraryState>(
           builder: (context, state) {
             if (state is GetAllBookLoadingState) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(color: AppColor.primary500),
+              );
             } else if (state is GetAllBookSuccessState) {
               return _buildList(state.books);
             } else if (state is GetAllBookErrorState) {
@@ -70,7 +89,7 @@ class LibraryView extends StatelessWidget {
   }
 
   Widget _buildList(List<BookEntity> books) {
-    print(books.length);
+    
     return ListView.builder(
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {

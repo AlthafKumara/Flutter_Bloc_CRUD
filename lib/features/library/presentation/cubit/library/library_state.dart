@@ -43,7 +43,12 @@ class CreateBookErrorState extends LibraryState {
 
 class UploadBookCoverLoadingState extends LibraryState {}
 
-class UploadBookCoverSuccessState extends LibraryState {}
+class UploadBookCoverSuccessState extends LibraryState {
+  final String message;
+  const UploadBookCoverSuccessState(this.message);
+  @override
+  List<Object> get props => [message];
+}
 
 class UploadBookCoverErrorState extends LibraryState {
   final String message;
@@ -68,6 +73,24 @@ class DeleteBookSuccessState extends LibraryState {
 class DeleteBookErrorState extends LibraryState {
   final String message;
   const DeleteBookErrorState(this.message);
+  @override
+  List<Object> get props => [message];
+}
+
+//  ============================ UPDATE BOOK ===============================
+
+class UpdateBookLoadingState extends LibraryState {}
+
+class UpdateBookSuccessState extends LibraryState {
+  final String message;
+  const UpdateBookSuccessState(this.message);
+  @override
+  List<Object> get props => [message];
+}
+
+class UpdateBookErrorState extends LibraryState {
+  final String message;
+  const UpdateBookErrorState(this.message);
   @override
   List<Object> get props => [message];
 }
