@@ -1,4 +1,4 @@
-import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+import '../models/get_books_model.dart';
 
 import '../models/create_books_model.dart';
 import '../models/delete_book_model.dart';

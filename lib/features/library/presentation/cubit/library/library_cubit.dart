@@ -69,7 +69,9 @@ class LibraryCubit extends Cubit<LibraryState> {
 
         createResult.fold(
           (failure) => emit(CreateBookErrorState(failure.message.toString())),
-          (_) => emit(CreateBookSuccessState()),
+          (_) => emit(CreateBookSuccessState(
+            "Buku berhasil ditambahkan",
+          )),
         );
       },
     );

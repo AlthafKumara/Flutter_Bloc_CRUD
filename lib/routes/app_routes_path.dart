@@ -1,4 +1,6 @@
 enum AppRoutes {
+  login(path: "/login"),
+
   libraryView(path: "/library_view"),
   libraryBookDetail(path: "/library_book_detail"),
   libraryFormBook(path: "/library_form_book");

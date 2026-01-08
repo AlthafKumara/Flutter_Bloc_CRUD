@@ -1,9 +1,3 @@
-import '../../domain/entities/book_entity.dart';
-import '../cubit/library/library_cubit.dart';
-import '../widgets/container_cover.dart';
-import '../../../../routes/app_routes_path.dart';
-import '../../../../widgets/custom_dialog.dart';
-import '../../../../widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +5,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
+import '../../../../routes/app_routes_path.dart';
+import '../../../../widgets/custom_dialog.dart';
+import '../../../../widgets/custom_snackbar.dart';
+import '../../domain/entities/book_entity.dart';
+import '../cubit/library/library_cubit.dart';
+import '../widgets/container_cover.dart';
 
 class LibraryBookDetail extends StatelessWidget {
   final BookEntity book;

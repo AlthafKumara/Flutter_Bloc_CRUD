@@ -10,4 +10,6 @@ class ApiUrl {
   static final book = SupabaseHelper.client.from("book");
 
   static final bookStorage = SupabaseHelper.client.storage.from("book_cover");
+
+  static final auth = SupabaseHelper.client.auth;
 }

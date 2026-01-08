@@ -1,4 +1,3 @@
-import '../../../../routes/app_routes_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,19 +5,20 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
+import '../../../../routes/app_routes_path.dart';
 import '../../../../widgets/button_medium.dart';
 import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
 import '../widgets/default_book_card.dart';
 
-class LibraryView extends StatefulWidget {
-  const LibraryView({super.key});
+class LibraryPage extends StatefulWidget {
+  const LibraryPage({super.key});
 
   @override
-  State<LibraryView> createState() => _LibraryViewState();
+  State<LibraryPage> createState() => _LibraryViewState();
 }
 
-class _LibraryViewState extends State<LibraryView> {
+class _LibraryViewState extends State<LibraryPage> {
   @override
   void initState() {
     super.initState();

@@ -24,3 +24,7 @@ class NetworkFailure extends Failure {
 class EmptyFailure extends Failure {
   const EmptyFailure(String message) : super(message);
 }
+
+class AuthFailure extends Failure {
+  const AuthFailure(String message) : super(message);
+}

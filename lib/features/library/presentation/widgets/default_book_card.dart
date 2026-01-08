@@ -1,14 +1,13 @@
-import '../cubit/library/library_cubit.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../domain/entities/book_entity.dart';
-import '../../../../routes/app_routes_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
+import '../../../../routes/app_routes_path.dart';
+import '../../domain/entities/book_entity.dart';
+import '../cubit/library/library_cubit.dart';
 
 class DefaultBookCard extends StatelessWidget {
   final BookEntity book;

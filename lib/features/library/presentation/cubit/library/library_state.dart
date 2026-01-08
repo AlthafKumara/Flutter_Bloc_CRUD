@@ -30,7 +30,12 @@ class GetAllBookErrorState extends LibraryState {
 
 class CreateBookLoadingState extends LibraryState {}
 
-class CreateBookSuccessState extends LibraryState {}
+class CreateBookSuccessState extends LibraryState {
+  final String message;
+  const CreateBookSuccessState(this.message);
+  @override
+  List<Object> get props => [message];
+}
 
 class CreateBookErrorState extends LibraryState {
   final String message;

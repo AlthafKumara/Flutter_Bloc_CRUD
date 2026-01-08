@@ -1,20 +1,19 @@
-import '../../../core/service/image_picker_services.dart';
-import '../domain/usecases/create_book_usecase.dart';
-import '../domain/usecases/delete_books_usecase.dart';
-import '../domain/usecases/update_book_usecase.dart';
-import '../domain/usecases/upload_book_cover_usecase.dart';
-import '../presentation/cubit/library_form/library_form_cubit.dart';
-
 import '../../../configs/injector/injector_conf.dart';
 import '../../../core/cache/hive_local_storage.dart';
 import '../../../core/cache/local_storage.dart';
 import '../../../core/network/network_checker.dart';
+import '../../../core/service/image_picker_services.dart';
 import '../data/datasources/book_local_datasource.dart';
 import '../data/datasources/book_remote_datasource.dart';
 import '../data/repositories/books_repository_impl.dart';
 import '../domain/repositories/book_repository.dart';
+import '../domain/usecases/create_book_usecase.dart';
+import '../domain/usecases/delete_books_usecase.dart';
 import '../domain/usecases/get_books_usecase.dart';
+import '../domain/usecases/update_book_usecase.dart';
+import '../domain/usecases/upload_book_cover_usecase.dart';
 import '../presentation/cubit/library/library_cubit.dart';
+import '../presentation/cubit/library_form/library_form_cubit.dart';
 
 class LibraryDependency {
   LibraryDependency._();

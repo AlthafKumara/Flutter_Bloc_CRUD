@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import '../core/themes/app_color.dart';
 import '../core/themes/app_text_style.dart';
-import 'package:flutter/material.dart';
 
 class CustomDialog extends StatelessWidget {
   final String title;

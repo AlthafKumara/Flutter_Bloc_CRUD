@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
+
 import '../../../../core/errors/failure.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repositories/book_repository.dart';
-import 'package:dartz/dartz.dart';
-import 'package:equatable/equatable.dart';
 
 class UploadBookCoverUsecase implements UseCase<String, Params> {
   final BookRepository _repository;
