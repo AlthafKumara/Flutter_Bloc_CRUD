@@ -1,6 +1,7 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../../../../core/api/api_url.dart';
 import '../models/login_model.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 sealed class AuthRemoteDatasource {
   Future<void> login(LoginModel model);

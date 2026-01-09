@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import '../../../domain/entities/book_entity.dart';
-import '../../../domain/usecases/delete_books_usecase.dart';
-import '../../../domain/usecases/update_book_usecase.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../../../core/usecases/usecase.dart';
+import '../../../domain/entities/book_entity.dart';
 import '../../../domain/usecases/create_book_usecase.dart';
+import '../../../domain/usecases/delete_books_usecase.dart';
+import '../../../domain/usecases/get_books_usecase.dart';
+import '../../../domain/usecases/update_book_usecase.dart';
 import '../../../domain/usecases/upload_book_cover_usecase.dart';
 import '../../../domain/usecases/usecase_params.dart';
-import '../../../../../core/usecases/usecase.dart';
-import '../../../domain/usecases/get_books_usecase.dart';
 
 part 'library_state.dart';
 
@@ -28,6 +29,8 @@ class LibraryCubit extends Cubit<LibraryState> {
     this._updateBookUsecase,
   ) : super(LibraryInitial());
 
+  List<BookEntity> allbooks = [];
+
   // ================= GET ALL BOOK =================
   Future<void> getAllBooks() async {
     emit(GetAllBookLoadingState());
@@ -36,8 +39,27 @@ class LibraryCubit extends Cubit<LibraryState> {
 
     result.fold(
       (failure) => emit(GetAllBookErrorState(failure.message.toString())),
-      (books) => emit(GetAllBookSuccessState(books)),
+      (books) {
+        allbooks = books;
+        emit(GetAllBookSuccessState(books));
+      },
     );
+  }
+
+  void searchBooks(String keyword) {
+    if (keyword.isEmpty) {
+      emit(GetAllBookSuccessState(allbooks));
+      return;
+    }
+
+    final lower = keyword.toLowerCase();
+
+    final filtered = allbooks.where((book) {
+      return book.title!.toLowerCase().contains(lower) ||
+          book.author!.toLowerCase().contains(lower);
+    }).toList();
+
+    emit(GetAllBookSuccessState(filtered));
   }
 
   // ================= CREATE BOOK + COVER =================
@@ -69,9 +91,7 @@ class LibraryCubit extends Cubit<LibraryState> {
 
         createResult.fold(
           (failure) => emit(CreateBookErrorState(failure.message.toString())),
-          (_) => emit(CreateBookSuccessState(
-            "Buku berhasil ditambahkan",
-          )),
+          (_) => emit(CreateBookSuccessState("Buku berhasil ditambahkan")),
         );
       },
     );
@@ -121,7 +141,6 @@ class LibraryCubit extends Cubit<LibraryState> {
   }
 
   Future<void> deleteBook({required int id, required String coverUrl}) async {
-    
     emit(DeleteBookLoadingState());
 
     final result = await _deleteBooksUsecase.call(

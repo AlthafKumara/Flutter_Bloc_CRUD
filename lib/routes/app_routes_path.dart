@@ -1,6 +1,10 @@
 enum AppRoutes {
+
+  // ========================== AUTH ================================
+  splash(path: "/splash"),
   login(path: "/login"),
 
+// ========================== LIBRARY ================================
   libraryView(path: "/library_view"),
   libraryBookDetail(path: "/library_book_detail"),
   libraryFormBook(path: "/library_form_book");

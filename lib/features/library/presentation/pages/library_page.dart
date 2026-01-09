@@ -1,3 +1,5 @@
+import '../../../../core/constants/assets_constant.dart';
+import '../../../../widgets/textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,7 +73,41 @@ class _LibraryViewState extends State<LibraryPage> {
                 child: CircularProgressIndicator(color: AppColor.primary500),
               );
             } else if (state is GetAllBookSuccessState) {
-              return _buildList(state.books);
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextfield.textFieldRounded(
+                          onChanged: (value) =>
+                              context.read<LibraryCubit>().searchBooks(value),
+                          enabled: true,
+                          isObsecureText: false,
+                          keyBoardType: TextInputType.text,
+                          hintText: "Search Your Book Here",
+                          maxLines: 1,
+                          textAlign: TextAlign.start,
+                          validator: null,
+                          prefixicon: SizedBox(
+                            width: 20.w,
+                            height: 20.w,
+                            child: Image.asset(Assets.iconSearch),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.h),
+                  state.books.isEmpty
+                      ? Expanded(
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: const Center(child: Text('Tidak ada data')),
+                          ),
+                        )
+                      : Expanded(child: _buildList(state.books)),
+                ],
+              );
             } else if (state is GetAllBookErrorState) {
               return Center(child: Text(state.message));
             } else {
@@ -89,7 +125,6 @@ class _LibraryViewState extends State<LibraryPage> {
   }
 
   Widget _buildList(List<BookEntity> books) {
-    
     return ListView.builder(
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {

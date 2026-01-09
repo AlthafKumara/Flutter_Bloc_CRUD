@@ -1,6 +1,3 @@
-import '../cubit/auth/auth_cubit.dart';
-import '../cubit/auth_login_form/auth_login_form_cubit.dart';
-import '../cubit/auth_login_form/auth_login_form_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +8,9 @@ import '../../../../core/themes/app_text_style.dart';
 import '../../../../core/utils/validator.dart';
 import '../../../../widgets/button_large.dart';
 import '../../../../widgets/textfield.dart';
+import '../cubit/auth/auth_cubit.dart';
+import '../cubit/auth_login_form/auth_login_form_cubit.dart';
+import '../cubit/auth_login_form/auth_login_form_state.dart';
 
 class LoginBody extends StatelessWidget {
   LoginBody({super.key});

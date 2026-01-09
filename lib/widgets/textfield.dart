@@ -125,6 +125,7 @@ class CustomTextfield {
     final Widget? prefixicon,
     final Widget? suffixicon,
     final TextEditingController? controller,
+    final void Function(String)? onChanged,
     final bool? isObsecureText,
     final int? maxLines,
     final TextInputType? keyBoardType,
@@ -150,6 +151,7 @@ class CustomTextfield {
 
             maxLines: maxLines,
             controller: controller,
+            onChanged: onChanged,
             keyboardType: keyBoardType,
             enabled: enabled,
             obscureText: isObsecureText!,
@@ -233,6 +235,7 @@ class CustomTextfield {
 
       maxLines: maxLines,
       controller: controller,
+      onChanged: onChanged,
       keyboardType: keyBoardType,
       enabled: enabled,
       obscureText: isObsecureText!,

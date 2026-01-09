@@ -1,12 +1,12 @@
-import '../models/create_books_model.dart';
-import '../models/delete_book_model.dart';
-import '../models/update_books_model.dart';
-import '../models/upload_book_cover_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/api/api_url.dart';
 import '../../../../core/errors/exception.dart';
+import '../models/create_books_model.dart';
+import '../models/delete_book_model.dart';
 import '../models/get_books_model.dart';
+import '../models/update_books_model.dart';
+import '../models/upload_book_cover_model.dart';
 
 sealed class BookRemoteDatasource {
   Future<List<GetBooksModel>> getBooks();

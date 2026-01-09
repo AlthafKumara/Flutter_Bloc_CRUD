@@ -1,13 +1,22 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+
 import '../../../domain/usecases/auth_usecase_params.dart';
 import '../../../domain/usecases/login_usecase.dart';
-import 'package:equatable/equatable.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final LoginUsecase _loginUseCase;
   AuthCubit(this._loginUseCase) : super(AuthInitial());
+
+  void splashDelay() {
+    emit(SplashLoadingState());
+
+    Future.delayed(
+      const Duration(seconds: 3),
+    ).then((value) => emit(SplashSuccessState()));
+  }
 
   Future<void> login({required String email, required String password}) async {
     emit(LoginLoadingState());

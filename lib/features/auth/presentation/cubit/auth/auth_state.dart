@@ -9,6 +9,11 @@ abstract class AuthState extends Equatable {
 
 class AuthInitial extends AuthState {}
 
+// =========================== SPLASH ================================
+
+class SplashLoadingState extends AuthState {}
+class SplashSuccessState extends AuthState {}
+
 // =========================== LOGIN ================================
 
 class LoginLoadingState extends AuthState {}
