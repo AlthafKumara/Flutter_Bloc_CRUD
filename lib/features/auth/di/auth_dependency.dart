@@ -1,3 +1,5 @@
+import '../presentation/cubit/login_flow/login_flow_cubit.dart';
+
 import '../../../configs/injector/injector_conf.dart';
 import '../data/datasources/auth_remote_datasource.dart';
 import '../data/repositories/auth_repository_impl.dart';
@@ -30,5 +32,7 @@ class AuthDependency {
     getIt.registerFactory(() => AuthCubit(getIt<LoginUsecase>()));
 
     getIt.registerFactory(() => AuthLoginFormCubit());
+
+    getIt.registerFactory(() => LoginFlowCubit());
   }
 }

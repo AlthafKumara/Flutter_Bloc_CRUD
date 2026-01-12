@@ -1,3 +1,5 @@
+import '../features/auth/presentation/cubit/login_flow/login_flow_cubit.dart';
+import '../features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -37,6 +39,8 @@ class AppRoutesConf {
               providers: [
                 BlocProvider(create: (_) => getIt<AuthCubit>()),
                 BlocProvider(create: (_) => getIt<AuthLoginFormCubit>()),
+                BlocProvider(create: (_) => getIt<ProfileCubit>()),
+                BlocProvider(create: (_) => getIt<LoginFlowCubit>()),
               ],
               child: LoginPage(),
             ),
@@ -48,8 +52,15 @@ class AppRoutesConf {
       GoRoute(
         path: AppRoutes.libraryView.path,
         name: AppRoutes.libraryView.name,
-        builder: (context, state) => BlocProvider(
-          create: (context) => getIt<LibraryCubit>()..getAllBooks(),
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => getIt<LibraryCubit>()..getAllBooks(),
+            ),
+            BlocProvider(
+              create: (context) => getIt<ProfileCubit>()..getProfile(),
+            ),
+          ],
           child: const LibraryPage(),
         ),
         routes: [
