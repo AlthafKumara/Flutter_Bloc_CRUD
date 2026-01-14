@@ -1,4 +1,8 @@
 import 'package:bloc/bloc.dart';
+
+import '../../../../../core/usecases/usecase.dart';
+import '../../../../profile/domain/entities/profile_entity.dart';
+import '../../../../profile/domain/usecases/get_profile_usecase.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../domain/usecases/auth_usecase_params.dart';
@@ -7,15 +11,19 @@ import '../../../domain/usecases/login_usecase.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
+  final GetProfileUsecase _getProfileUsecase;
   final LoginUsecase _loginUseCase;
-  AuthCubit(this._loginUseCase) : super(AuthInitial());
+  AuthCubit(this._loginUseCase, this._getProfileUsecase) : super(AuthInitial());
 
-  void splashDelay() {
+  Future<void> splashDelay() async {
     emit(SplashLoadingState());
 
-    Future.delayed(
-      const Duration(seconds: 3),
-    ).then((value) => emit(SplashSuccessState()));
+    final result = await _getProfileUsecase.call(NoParams());
+
+    result.fold(
+      (_) => emit(UnAuthenticatedState()),
+      (profile) => emit(AuthenticatedState(profile)),
+    );
   }
 
   Future<void> login({required String email, required String password}) async {

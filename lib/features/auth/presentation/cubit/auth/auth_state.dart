@@ -12,7 +12,17 @@ class AuthInitial extends AuthState {}
 // =========================== SPLASH ================================
 
 class SplashLoadingState extends AuthState {}
-class SplashSuccessState extends AuthState {}
+
+// ================================== LOGIN STATUS ================================
+
+class AuthenticatedState extends AuthState {
+  final ProfileEntity profile;
+  const AuthenticatedState(this.profile);
+  @override
+  List<Object> get props => [profile];
+}
+
+class UnAuthenticatedState extends AuthState {}
 
 // =========================== LOGIN ================================
 

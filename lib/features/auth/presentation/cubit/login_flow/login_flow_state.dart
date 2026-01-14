@@ -1,5 +1,6 @@
-import '../../../../profile/domain/entities/profile_entity.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../../profile/domain/entities/profile_entity.dart';
 
 abstract class LoginFlowState extends Equatable {
   @override

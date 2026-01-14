@@ -1,3 +1,5 @@
+import 'features/profile/data/models/profile_model.dart';
+
 import 'features/library/data/models/get_books_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -22,6 +24,7 @@ void main() async {
   // =================== HIVE ===========================
   await Hive.initFlutter();
   Hive.registerAdapter(GetBooksModelAdapter());
+  Hive.registerAdapter(ProfileModelAdapter());
 
   // =================== INJECTOR ===========================
   configureDepedencies();

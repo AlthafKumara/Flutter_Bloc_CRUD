@@ -12,20 +12,10 @@ import '../../../../widgets/textfield.dart';
 import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
 import '../widgets/default_book_card.dart';
+import '../widgets/default_book_card_loading.dart';
 
-class LibraryPage extends StatefulWidget {
+class LibraryPage extends StatelessWidget {
   const LibraryPage({super.key});
-
-  @override
-  State<LibraryPage> createState() => _LibraryViewState();
-}
-
-class _LibraryViewState extends State<LibraryPage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<LibraryCubit>().getAllBooks();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,39 +59,38 @@ class _LibraryViewState extends State<LibraryPage> {
         onRefresh: () => context.read<LibraryCubit>().getAllBooks(),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-          child: BlocBuilder<LibraryCubit, LibraryState>(
-            builder: (context, state) {
-              if (state is GetAllBookLoadingState) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColor.primary500),
-                );
-              } else if (state is GetAllBookSuccessState) {
-                return Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomTextfield.textFieldRounded(
-                            onChanged: (value) =>
-                                context.read<LibraryCubit>().searchBooks(value),
-                            enabled: true,
-                            isObsecureText: false,
-                            keyBoardType: TextInputType.text,
-                            hintText: "Search Your Book Here",
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                            validator: null,
-                            prefixicon: SizedBox(
-                              width: 20.w,
-                              height: 20.w,
-                              child: Image.asset(Assets.iconSearch),
-                            ),
-                          ),
-                        ),
-                      ],
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextfield.textFieldRounded(
+                      onChanged: (value) =>
+                          context.read<LibraryCubit>().searchBooks(value),
+                      enabled: true,
+                      isObsecureText: false,
+                      keyBoardType: TextInputType.text,
+                      hintText: "Search Your Book Here",
+                      maxLines: 1,
+                      textAlign: TextAlign.start,
+                      validator: null,
+                      prefixicon: SizedBox(
+                        width: 20.w,
+                        height: 20.w,
+                        child: Image.asset(Assets.iconSearch),
+                      ),
                     ),
-                    SizedBox(height: 16.h),
-                    state.books.isEmpty
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.h),
+
+              BlocBuilder<LibraryCubit, LibraryState>(
+                builder: (context, state) {
+                  if (state is GetAllBookLoadingState) {
+                    return Expanded(child: _buildListLoading());
+                  } else if (state is GetAllBookSuccessState) {
+                    return state.books.isEmpty
                         ? Expanded(
                             child: SizedBox(
                               height: MediaQuery.of(context).size.height * 0.5,
@@ -110,22 +99,17 @@ class _LibraryViewState extends State<LibraryPage> {
                               ),
                             ),
                           )
-                        : Expanded(child: _buildList(state.books)),
-                  ],
-                );
-              } else if (state is GetAllBookErrorState) {
-                return Center(child: Text(state.message));
-              } else {
-                return const Center(child: Text('Tidak ada data'));
-              }
-            },
+                        : Expanded(child: _buildList(state.books));
+                  } else if (state is GetAllBookErrorState) {
+                    return Center(child: Text(state.message));
+                  } else {
+                    return const Center(child: Text('Tidak ada data'));
+                  }
+                },
+              ),
+            ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColor.primary500,
-        onPressed: () => context.read<LibraryCubit>().getAllBooks(),
-        child: const Icon(Icons.refresh, color: AppColor.neutral100),
       ),
     );
   }
@@ -137,6 +121,16 @@ class _LibraryViewState extends State<LibraryPage> {
         return DefaultBookCard(book: books[index]);
       },
       itemCount: books.length,
+    );
+  }
+
+  Widget _buildListLoading() {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemBuilder: (context, index) {
+        return DefaultBookCardLoading();
+      },
+      itemCount: 6,
     );
   }
 }

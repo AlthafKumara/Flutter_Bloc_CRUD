@@ -1,11 +1,10 @@
-import '../features/auth/presentation/cubit/login_flow/login_flow_cubit.dart';
-import '../features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../configs/injector/injector_conf.dart';
 import '../features/auth/presentation/cubit/auth/auth_cubit.dart';
 import '../features/auth/presentation/cubit/auth_login_form/auth_login_form_cubit.dart';
+import '../features/auth/presentation/cubit/login_flow/login_flow_cubit.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/library/domain/entities/book_entity.dart';
@@ -14,6 +13,7 @@ import '../features/library/presentation/cubit/library_form/library_form_cubit.d
 import '../features/library/presentation/pages/library_book_detail_page.dart';
 import '../features/library/presentation/pages/library_form_book_page.dart';
 import '../features/library/presentation/pages/library_page.dart';
+import '../features/profile/presentation/cubit/profile_cubit.dart';
 import 'app_routes_path.dart';
 
 class AppRoutesConf {

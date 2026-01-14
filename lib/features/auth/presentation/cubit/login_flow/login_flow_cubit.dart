@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'login_flow_state.dart';
+
 import '../../../../profile/domain/entities/profile_entity.dart';
+import 'login_flow_state.dart';
 
 class LoginFlowCubit extends Cubit<LoginFlowState> {
   LoginFlowCubit() : super(LoginFlowInitialState());
