@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 
 import '../../../../../core/usecases/usecase.dart';
 import '../../../../profile/domain/entities/profile_entity.dart';
 import '../../../../profile/domain/usecases/get_profile_usecase.dart';
-import 'package:equatable/equatable.dart';
-
 import '../../../domain/usecases/auth_usecase_params.dart';
 import '../../../domain/usecases/login_usecase.dart';
 

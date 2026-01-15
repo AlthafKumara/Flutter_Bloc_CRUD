@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../configs/injector/injector_conf.dart';
+import '../../../../core/network/network_checker.dart';
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
 import '../../../../routes/app_routes_path.dart';
@@ -12,9 +14,31 @@ import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
 import '../widgets/container_cover.dart';
 
-class LibraryBookDetail extends StatelessWidget {
+class LibraryBookDetail extends StatefulWidget {
   final BookEntity book;
   const LibraryBookDetail({super.key, required this.book});
+
+  @override
+  State<LibraryBookDetail> createState() => _LibraryBookDetailState();
+}
+
+class _LibraryBookDetailState extends State<LibraryBookDetail> {
+  final network = getIt<NetworkInfo>();
+  bool isConnected = false;
+
+  @override
+  void initState() {
+    checkNetwork();
+    super.initState();
+  }
+
+  Future<void> checkNetwork() async {
+    final result = await network.checkIsConnected;
+
+    setState(() {
+      isConnected = result;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,13 +80,21 @@ class LibraryBookDetail extends StatelessWidget {
             actions: [
               GestureDetector(
                 onTap: () async {
-                  final result = await context.pushNamed(
-                    AppRoutes.libraryFormBook.name,
-                    extra: bookdata,
-                  );
+                  if (isConnected) {
+                    final result = await context.pushNamed(
+                      AppRoutes.libraryFormBook.name,
+                      extra: bookdata,
+                    );
 
-                  if (result == true) {
-                    context.read<LibraryCubit>().getAllBooks();
+                    if (result == true) {
+                      context.read<LibraryCubit>().getAllBooks();
+                    }
+                  } else {
+                    CustomSnackbar.show(
+                      context,
+                      message: 'No Internet Connection',
+                      backgroundColor: AppColor.danger600,
+                    );
                   }
                 },
                 child: Container(
@@ -80,11 +112,19 @@ class LibraryBookDetail extends StatelessWidget {
                       title: "Hapus Buku",
                       message: "Apakah anda yakin ingin menghapus buku ini ?",
                       onTap: () {
-                        context.pop();
-                        context.read<LibraryCubit>().deleteBook(
-                          coverUrl: bookdata.coverUrl!,
-                          id: bookdata.id!,
-                        );
+                        if (isConnected) {
+                          context.pop();
+                          context.read<LibraryCubit>().deleteBook(
+                            coverUrl: bookdata.coverUrl!,
+                            id: bookdata.id!,
+                          );
+                        } else {
+                          CustomSnackbar.show(
+                            context,
+                            message: 'No Internet Connection',
+                            backgroundColor: AppColor.danger600,
+                          );
+                        }
                       },
                     ),
                   );

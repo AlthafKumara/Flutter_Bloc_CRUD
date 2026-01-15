@@ -1,7 +1,7 @@
 import '../../../../core/cache/local_storage.dart';
 import '../../../../core/errors/exception.dart';
-import '../models/profile_model.dart';
 import '../../domain/entities/profile_entity.dart';
+import '../models/profile_model.dart';
 
 sealed class ProfileLocalDatasource {
   Future<ProfileEntity?> getProfile();

@@ -1,4 +1,4 @@
-import 'package:crud_clean_bloc/widgets/custom_snackbar.dart';
+import '../../../../widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

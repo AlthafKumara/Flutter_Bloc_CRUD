@@ -61,7 +61,7 @@ class AppRoutesConf {
               create: (context) => getIt<ProfileCubit>()..getProfile(),
             ),
           ],
-          child: const LibraryPage(),
+          child: LibraryPage(),
         ),
         routes: [
           GoRoute(

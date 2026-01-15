@@ -1,8 +1,9 @@
+import 'package:dartz/dartz.dart';
+
 import '../../../../core/errors/failure.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/profile_entity.dart';
 import '../repositories/profile_repository.dart';
-import 'package:dartz/dartz.dart';
 
 class GetProfileUsecase implements UseCase<ProfileEntity, NoParams> {
   final ProfileRepository _repository;

@@ -3,19 +3,43 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../configs/injector/injector_conf.dart';
 import '../../../../core/constants/assets_constant.dart';
+import '../../../../core/network/network_checker.dart';
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
 import '../../../../routes/app_routes_path.dart';
 import '../../../../widgets/button_medium.dart';
+import '../../../../widgets/custom_snackbar.dart';
 import '../../../../widgets/textfield.dart';
 import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
-import '../widgets/default_book_card.dart';
-import '../widgets/default_book_card_loading.dart';
+import '../widgets/book_card_item.dart';
 
-class LibraryPage extends StatelessWidget {
+class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
+
+  @override
+  State<LibraryPage> createState() => _LibraryPageState();
+}
+
+class _LibraryPageState extends State<LibraryPage> {
+  final network = getIt<NetworkInfo>();
+  bool isConnected = false;
+
+  @override
+  void initState() {
+    checkNetwork();
+    super.initState();
+  }
+
+  Future<void> checkNetwork() async {
+    final result = await network.checkIsConnected;
+
+    setState(() {
+      isConnected = result;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +62,20 @@ class LibraryPage extends StatelessWidget {
             text: 'Add Book',
             isLoading: false,
             onPressed: () async {
-              final result = await context.pushNamed(
-                AppRoutes.libraryFormBook.name,
-              );
+              if (isConnected) {
+                final result = await context.pushNamed(
+                  AppRoutes.libraryFormBook.name,
+                );
 
-              if (result == true) {
-                context.read<LibraryCubit>().getAllBooks();
+                if (result == true) {
+                  context.read<LibraryCubit>().getAllBooks();
+                }
+              } else if (!isConnected) {
+                CustomSnackbar.show(
+                  context,
+                  message: 'No Internet Connection',
+                  backgroundColor: AppColor.danger600,
+                );
               }
             },
             prefixicon: SizedBox(
@@ -88,7 +120,7 @@ class LibraryPage extends StatelessWidget {
               BlocBuilder<LibraryCubit, LibraryState>(
                 builder: (context, state) {
                   if (state is GetAllBookLoadingState) {
-                    return Expanded(child: _buildListLoading());
+                    return Expanded(child: _buildListLoading(isConnected));
                   } else if (state is GetAllBookSuccessState) {
                     return state.books.isEmpty
                         ? Expanded(
@@ -99,7 +131,7 @@ class LibraryPage extends StatelessWidget {
                               ),
                             ),
                           )
-                        : Expanded(child: _buildList(state.books));
+                        : Expanded(child: _buildList(state.books, isConnected));
                   } else if (state is GetAllBookErrorState) {
                     return Center(child: Text(state.message));
                   } else {
@@ -114,21 +146,21 @@ class LibraryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildList(List<BookEntity> books) {
+  Widget _buildList(List<BookEntity> books, bool isConnected) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
-        return DefaultBookCard(book: books[index]);
+        return BookCardItem(book: books[index], isConnected: isConnected);
       },
       itemCount: books.length,
     );
   }
 
-  Widget _buildListLoading() {
+  Widget _buildListLoading(bool isConnected) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
-        return DefaultBookCardLoading();
+        return BookCardItem(isLoading: true, isConnected: isConnected);
       },
       itemCount: 6,
     );
