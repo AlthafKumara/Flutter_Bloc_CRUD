@@ -1,10 +1,9 @@
+import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
+import 'package:crud_clean_bloc/core/cubit/network_cubit/network_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../configs/injector/injector_conf.dart';
-import '../../../../core/network/network_checker.dart';
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
 import '../../../../routes/app_routes_path.dart';
@@ -14,31 +13,9 @@ import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
 import '../widgets/container_cover.dart';
 
-class LibraryBookDetail extends StatefulWidget {
+class LibraryBookDetail extends StatelessWidget {
   final BookEntity book;
   const LibraryBookDetail({super.key, required this.book});
-
-  @override
-  State<LibraryBookDetail> createState() => _LibraryBookDetailState();
-}
-
-class _LibraryBookDetailState extends State<LibraryBookDetail> {
-  final network = getIt<NetworkInfo>();
-  bool isConnected = false;
-
-  @override
-  void initState() {
-    checkNetwork();
-    super.initState();
-  }
-
-  Future<void> checkNetwork() async {
-    final result = await network.checkIsConnected;
-
-    setState(() {
-      isConnected = result;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,55 +55,64 @@ class _LibraryBookDetailState extends State<LibraryBookDetail> {
 
             actionsPadding: EdgeInsets.symmetric(horizontal: 16.w),
             actions: [
-              GestureDetector(
-                onTap: () async {
-                  if (isConnected) {
-                    final result = await context.pushNamed(
-                      AppRoutes.libraryFormBook.name,
-                      extra: bookdata,
-                    );
+              BlocBuilder<NetworkCubit, NetworkState>(
+                builder: (context, state) {
+                  return GestureDetector(
+                    onTap: () async {
+                      if (state is NetworkConnectedState) {
+                        final result = await context.pushNamed(
+                          AppRoutes.libraryFormBook.name,
+                          extra: bookdata,
+                        );
 
-                    if (result == true) {
-                      context.read<LibraryCubit>().getAllBooks();
-                    }
-                  } else {
-                    CustomSnackbar.show(
-                      context,
-                      message: 'No Internet Connection',
-                      backgroundColor: AppColor.danger600,
-                    );
-                  }
+                        if (result == true) {
+                          context.read<LibraryCubit>().getAllBooks();
+                        }
+                      } else if (state is NetworkDisconnectedState) {
+                        CustomSnackbar.show(
+                          context,
+                          message: 'No Internet Connection',
+                          backgroundColor: AppColor.danger600,
+                        );
+                      }
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(right: 16.w),
+                      child: Icon(Icons.edit, color: AppColor.primary500),
+                    ),
+                  );
                 },
-                child: Container(
-                  margin: EdgeInsets.only(right: 16.w),
-                  child: Icon(Icons.edit, color: AppColor.primary500),
-                ),
               ),
 
-              GestureDetector(
-                child: Icon(Icons.delete, color: AppColor.danger500),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => CustomDialog(
-                      title: "Hapus Buku",
-                      message: "Apakah anda yakin ingin menghapus buku ini ?",
-                      onTap: () {
-                        if (isConnected) {
-                          context.pop();
-                          context.read<LibraryCubit>().deleteBook(
-                            coverUrl: bookdata.coverUrl!,
-                            id: bookdata.id!,
-                          );
-                        } else {
-                          CustomSnackbar.show(
-                            context,
-                            message: 'No Internet Connection',
-                            backgroundColor: AppColor.danger600,
-                          );
-                        }
-                      },
-                    ),
+              BlocBuilder<NetworkCubit, NetworkState>(
+                builder: (context, state) {
+                  return GestureDetector(
+                    child: Icon(Icons.delete, color: AppColor.danger500),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => CustomDialog(
+                          title: "Hapus Buku",
+                          message:
+                              "Apakah anda yakin ingin menghapus buku ini ?",
+                          onTap: () {
+                            if (state is NetworkConnectedState) {
+                              context.pop();
+                              context.read<LibraryCubit>().deleteBook(
+                                coverUrl: bookdata.coverUrl!,
+                                id: bookdata.id!,
+                              );
+                            } else if (state is NetworkDisconnectedState) {
+                              CustomSnackbar.show(
+                                context,
+                                message: 'No Internet Connection',
+                                backgroundColor: AppColor.danger600,
+                              );
+                            }
+                          },
+                        ),
+                      );
+                    },
                   );
                 },
               ),

@@ -23,6 +23,8 @@ class BookCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+
     if (isLoading) {
       return _loadingCard();
     }

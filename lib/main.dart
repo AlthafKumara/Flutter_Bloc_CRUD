@@ -1,4 +1,6 @@
+import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -40,9 +42,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(393, 852),
-      child: MaterialApp.router(
-        routerConfig: AppRoutesConf().router,
-        debugShowCheckedModeBanner: false,
+      child: MultiBlocProvider(
+        providers: [BlocProvider(create: (_) => getIt<NetworkCubit>())],
+        child: MaterialApp.router(
+          routerConfig: AppRoutesConf().router,
+          debugShowCheckedModeBanner: false,
+        ),
       ),
     );
   }

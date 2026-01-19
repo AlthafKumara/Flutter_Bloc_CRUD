@@ -1,3 +1,4 @@
+import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -27,12 +28,13 @@ void configureDepedencies() {
 
   getIt.registerLazySingleton<HiveLocalStorage>(() => HiveLocalStorage());
 
-  
-
   // ================= FEATURE =================
   LibraryDependency.init();
   AuthDependency.init();
   ProfileDependency.init();
+
+  // ================= CUBIT =================
+  getIt.registerLazySingleton(() => NetworkCubit(getIt<NetworkInfo>()));
 
   // ================= ROUTER =================
   getIt.registerLazySingleton(() => AppRoutesConf());
