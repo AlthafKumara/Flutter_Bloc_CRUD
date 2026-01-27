@@ -5,75 +5,122 @@ import 'package:hive_flutter/adapters.dart';
 import '../../domain/entities/book_entity.dart';
 
 part 'get_books_model.g.dart';
+
 @HiveType(typeId: 0)
 class GetBooksModel extends BookEntity {
   @HiveField(0)
-  final int id;
-
-  @HiveField(1)
   final String title;
-
+  @HiveField(1)
+  final String author;
   @HiveField(2)
   final String description;
-
   @HiveField(3)
-  final String author;
-
+  final DateTime createdAt;
   @HiveField(4)
-  final String coverUrl;
+  int? serverId;
+  @HiveField(5)
+  int? localId;
+  @HiveField(6)
+  String? coverPath;
+  @HiveField(7)
+  String? coverUrl;
+  @HiveField(8)
+  bool? isSynced;
+
   GetBooksModel({
-    required this.id,
+    this.serverId,
+    this.localId,
     required this.title,
     required this.description,
+    required this.createdAt,
     required this.author,
-    required this.coverUrl,
+    this.coverPath,
+    this.isSynced = false,
+    this.coverUrl,
   }) : super(
-    id: id,
-    title: title,
-    description: description,
-    author: author,
-    coverUrl: coverUrl,
-  );
+         id: serverId,
+         title: title,
+         description: description,
+         author: author,
+         coverUrl: coverUrl,
+       );
 
-  factory GetBooksModel.fromJson(Map<String, dynamic> json) {
+  factory GetBooksModel.fromLocalMap(Map<String, dynamic> map) {
     return GetBooksModel(
-      id: json['id'],
+      serverId: map['server_id'],
+      localId: map['local_id'],
+      title: map['title'],
+      author: map['author'],
+      description: map['description'],
+      createdAt: DateTime.parse(map['created_at']),
+      coverPath: map['cover_path'],
+      coverUrl: map['cover_url'],
+      isSynced: map['is_synced'],
+    );
+  }
+
+  factory GetBooksModel.fromRemoteJson(Map<String, dynamic> json) {
+    return GetBooksModel(
+      serverId: json['id'],
+      localId: json['id'],
       title: json['title'],
       description: json['description'],
       author: json['author'],
       coverUrl: json['cover_url'],
+      coverPath: json['cover_path'] ?? "",
+      createdAt: DateTime.parse(json['created_at']),
+      isSynced: true,
     );
   }
 
-  static List<GetBooksModel> fromJsonList(List<dynamic> jsonList) {
-    return jsonList.map((json) => GetBooksModel.fromJson(json)).toList();
+  static List<GetBooksModel> fromMapLocalList(List<dynamic> mapList) {
+    return mapList.map((json) => GetBooksModel.fromLocalMap(json)).toList();
   }
 
-  factory GetBooksModel.fromMap(Map<String, dynamic> map) {
-    return GetBooksModel(
-      id: map['id'],
-      title: map['title'],
-      description: map['description'],
-      author: map['author'],
-      coverUrl: map['cover_url'],
-    );
+  static List<GetBooksModel> fromJsonRemoteList(List<dynamic> mapList) {
+    return mapList.map((json) => GetBooksModel.fromRemoteJson(json)).toList();
   }
 
-  static List<GetBooksModel> fromMapList(List<dynamic> mapList) {
-    return mapList.map((json) => GetBooksModel.fromJson(json)).toList();
-  }
-
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toLocalMap() {
     return {
-      'id': id,
+      'local_id': localId,
+      'server_id': serverId,
       'title': title,
-      'description': description,
       'author': author,
+      'description': description,
+      'created_at': createdAt.toIso8601String(),
+      'cover_path': coverPath,
       'cover_url': coverUrl,
+      'is_synced': isSynced ?? false,
     };
   }
 
-  static List<Map<String, dynamic>> toMapList(List<GetBooksModel> books) {
-    return books.map((book) => book.toMap()).toList();
+  static List<Map<String, dynamic>> toLocalMapList(List<GetBooksModel> books) {
+    return books.map((e) => e.toLocalMap()).toList();
+  }
+
+  GetBooksModel copyWith({
+    int? serverId,
+    int? localId,
+    String? coverPath,
+    String? coverUrl,
+    bool? isSynced,
+  }) {
+    return GetBooksModel(
+      serverId: serverId ?? this.serverId,
+      localId: localId ?? this.localId,
+      title: title,
+      author: author,
+      description: description,
+      createdAt: createdAt,
+      coverPath: coverPath ?? this.coverPath,
+      coverUrl: coverUrl ?? this.coverUrl,
+      isSynced: isSynced ?? this.isSynced,
+    );
+  }
+
+  @override
+  String toString() {
+    return "GetBooksModel{serverId: $serverId, localId: $localId, title: $title, author: $author, description: $description, createdAt: $createdAt, coverUrl: $coverUrl, coverPath: $coverPath, isSynced: $isSynced}";
   }
 }

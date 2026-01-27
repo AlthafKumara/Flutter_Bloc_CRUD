@@ -1,5 +1,6 @@
 import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
 import 'package:crud_clean_bloc/core/cubit/network_cubit/network_state.dart';
+import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,9 +12,7 @@ import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
 import '../../../../routes/app_routes_path.dart';
 import '../../../../widgets/button_medium.dart';
-import '../../../../widgets/custom_snackbar.dart';
 import '../../../../widgets/textfield.dart';
-import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
 import '../widgets/book_card_item.dart';
 
@@ -44,20 +43,12 @@ class LibraryPage extends StatelessWidget {
                 text: 'Add Book',
                 isLoading: false,
                 onPressed: () async {
-                  if (isConnected) {
-                    final result = await context.pushNamed(
-                      AppRoutes.libraryFormBook.name,
-                    );
+                  final result = await context.pushNamed(
+                    AppRoutes.libraryFormBook.name,
+                  );
 
-                    if (result == true) {
-                      context.read<LibraryCubit>().getAllBooks();
-                    }
-                  } else if (!isConnected) {
-                    CustomSnackbar.show(
-                      context,
-                      message: 'No Internet Connection',
-                      backgroundColor: AppColor.danger600,
-                    );
+                  if (result == true) {
+                    context.read<LibraryCubit>().getAllBooks();
                   }
                 },
                 prefixicon: SizedBox(
@@ -133,11 +124,15 @@ class LibraryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildList(List<BookEntity> books, bool isConnected) {
+  Widget _buildList(List<GetBooksModel> books, bool isConnected) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
-        return BookCardItem(book: books[index], isConnected: isConnected);
+        return BookCardItem(
+          book: books[index],
+          isConnected: isConnected,
+          isSync: books[index].isSynced,
+        );
       },
       itemCount: books.length,
     );

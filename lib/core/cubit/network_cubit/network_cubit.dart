@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'package:crud_clean_bloc/core/network/network_checker.dart';
+import 'package:crud_clean_bloc/core/service/sync_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'network_state.dart';
 
 class NetworkCubit extends Cubit<NetworkState> {
   final NetworkInfo networkInfo;
+  final SyncService syncService;
   late StreamSubscription _subscription;
 
-  NetworkCubit(this.networkInfo) : super(NetworkInitialState()) {
+  NetworkCubit(this.networkInfo, this.syncService)
+    : super(NetworkInitialState()) {
     _init();
   }
 
@@ -18,6 +21,8 @@ class NetworkCubit extends Cubit<NetworkState> {
 
     _subscription = networkInfo.onStatusChange.listen((connected) {
       networkInfo.setIsConnected = connected;
+
+      if (connected) syncService.syncBook();
       emit(connected ? NetworkConnectedState() : NetworkDisconnectedState());
     });
   }

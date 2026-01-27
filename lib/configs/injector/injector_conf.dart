@@ -1,4 +1,7 @@
 import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
+import 'package:crud_clean_bloc/core/service/sync_service.dart';
+import 'package:crud_clean_bloc/features/library/data/datasources/book_local_datasource.dart';
+import 'package:crud_clean_bloc/features/library/data/datasources/book_remote_datasource.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -33,8 +36,18 @@ void configureDepedencies() {
   AuthDependency.init();
   ProfileDependency.init();
 
+  // ================= SERVICE =================
+
+  getIt.registerLazySingleton<SyncService>(
+    () => SyncServiceImpl(
+      bookLocalDatasource: getIt<BookLocalDatasource>(),
+      bookRemoteDatasource: getIt<BookRemoteDatasource>(),
+    ),
+  );
   // ================= CUBIT =================
-  getIt.registerLazySingleton(() => NetworkCubit(getIt<NetworkInfo>()));
+  getIt.registerLazySingleton(
+    () => NetworkCubit(getIt<NetworkInfo>(), getIt<SyncService>()),
+  );
 
   // ================= ROUTER =================
   getIt.registerLazySingleton(() => AppRoutesConf());

@@ -1,10 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/usecases/usecase.dart';
-import '../../../domain/entities/book_entity.dart';
 import '../../../domain/usecases/create_book_usecase.dart';
 import '../../../domain/usecases/delete_books_usecase.dart';
 import '../../../domain/usecases/get_books_usecase.dart';
@@ -29,7 +30,7 @@ class LibraryCubit extends Cubit<LibraryState> {
     this._updateBookUsecase,
   ) : super(LibraryInitial());
 
-  List<BookEntity> allbooks = [];
+  List<GetBooksModel> allbooks = [];
 
   // ================= GET ALL BOOK =================
   Future<void> getAllBooks() async {
@@ -55,8 +56,8 @@ class LibraryCubit extends Cubit<LibraryState> {
     final lower = keyword.toLowerCase();
 
     final filtered = allbooks.where((book) {
-      return book.title!.toLowerCase().contains(lower) ||
-          book.author!.toLowerCase().contains(lower);
+      return book.title.toLowerCase().contains(lower) ||
+          book.author.toLowerCase().contains(lower);
     }).toList();
 
     emit(GetAllBookSuccessState(filtered));
@@ -67,33 +68,26 @@ class LibraryCubit extends Cubit<LibraryState> {
     required String title,
     required String author,
     required String description,
+    required String coverPath,
     required File coverFile,
   }) async {
     emit(CreateBookLoadingState());
 
-    final uploadResult = await _uploadBookCoverUsecase.call(
-      UploadBookCoverParams(title: title, file: coverFile),
+    coverPath = coverFile.path;
+    final createResult = await _createBookUsecase.call(
+      CreateBookParams(
+        title: title,
+        author: author,
+        description: description,
+        coverPath: coverPath,
+        coverUrl: "",
+      ),
     );
+    log("coverPath : $coverPath");
 
-    await uploadResult.fold(
-      (failure) async {
-        emit(UploadBookCoverErrorState(failure.message.toString()));
-      },
-      (coverUrl) async {
-        final createResult = await _createBookUsecase.call(
-          CreateBookParams(
-            title: title,
-            author: author,
-            description: description,
-            coverUrl: coverUrl,
-          ),
-        );
-
-        createResult.fold(
-          (failure) => emit(CreateBookErrorState(failure.message.toString())),
-          (_) => emit(CreateBookSuccessState("Buku berhasil ditambahkan")),
-        );
-      },
+    createResult.fold(
+      (failure) => emit(CreateBookErrorState(failure.message.toString())),
+      (_) => emit(CreateBookSuccessState("Buku berhasil ditambahkan")),
     );
   }
 

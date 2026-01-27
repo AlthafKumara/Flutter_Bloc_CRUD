@@ -13,7 +13,7 @@ class LibraryInitial extends LibraryState {}
 class GetAllBookLoadingState extends LibraryState {}
 
 class GetAllBookSuccessState extends LibraryState {
-  final List<BookEntity> books;
+  final List<GetBooksModel> books;
   const GetAllBookSuccessState(this.books);
   @override
   List<Object> get props => [books];

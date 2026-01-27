@@ -1,28 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'get_books_model.dart';
+part of 'create_books_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class GetBooksModelAdapter extends TypeAdapter<GetBooksModel> {
+class CreateBooksModelAdapter extends TypeAdapter<CreateBooksModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  GetBooksModel read(BinaryReader reader) {
+  CreateBooksModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return GetBooksModel(
+    return CreateBooksModel(
       serverId: fields[4] as int?,
       localId: fields[5] as int?,
       title: fields[0] as String,
+      author: fields[1] as String,
       description: fields[2] as String,
       createdAt: fields[3] as DateTime,
-      author: fields[1] as String,
       coverPath: fields[6] as String?,
       isSynced: fields[8] as bool?,
       coverUrl: fields[7] as String?,
@@ -30,7 +30,7 @@ class GetBooksModelAdapter extends TypeAdapter<GetBooksModel> {
   }
 
   @override
-  void write(BinaryWriter writer, GetBooksModel obj) {
+  void write(BinaryWriter writer, CreateBooksModel obj) {
     writer
       ..writeByte(9)
       ..writeByte(0)
@@ -59,7 +59,7 @@ class GetBooksModelAdapter extends TypeAdapter<GetBooksModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is GetBooksModelAdapter &&
+      other is CreateBooksModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

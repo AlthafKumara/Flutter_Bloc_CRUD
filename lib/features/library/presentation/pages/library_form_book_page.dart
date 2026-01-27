@@ -1,3 +1,4 @@
+import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +9,6 @@ import '../../../../core/utils/validator.dart';
 import '../../../../widgets/button_large.dart';
 import '../../../../widgets/custom_snackbar.dart';
 import '../../../../widgets/textfield.dart';
-import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
 import '../cubit/library_form/library_form_cubit.dart';
 import '../cubit/library_form/library_form_state.dart';
@@ -38,6 +38,7 @@ class LibraryFormBook extends StatelessWidget {
       title: formState.title,
       author: formState.author,
       description: formState.description,
+      coverPath: formState.newCoverFile!.path,
       coverFile: formState.newCoverFile!,
     );
   }
@@ -47,7 +48,6 @@ class LibraryFormBook extends StatelessWidget {
     required int id,
     required String oldCoverUrl,
   }) {
-    
     final formState = context.read<LibraryFormCubit>().state;
 
     if (!bookFormKey.currentState!.validate()) return;
@@ -100,7 +100,7 @@ class LibraryFormBook extends StatelessWidget {
       },
       child: BlocBuilder<LibraryFormCubit, LibraryFormState>(
         builder: (context, state) {
-          final bookdata = GoRouterState.of(context).extra as BookEntity?;
+          final bookdata = GoRouterState.of(context).extra as GetBooksModel?;
 
           return Scaffold(
             backgroundColor: AppColor.neutral100,

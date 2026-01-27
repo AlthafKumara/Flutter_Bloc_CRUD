@@ -6,9 +6,12 @@ class ServerException implements Exception {
 class CacheException implements Exception {
   final String message;
   CacheException(this.message);
+
+  @override
+  String toString() => message;
 }
 
 class AuthException implements Exception {
   final String message;
-  AuthException(this.message);  
+  AuthException(this.message);
 }

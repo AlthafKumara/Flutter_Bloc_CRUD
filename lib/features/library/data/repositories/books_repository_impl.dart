@@ -1,10 +1,12 @@
+import 'dart:developer';
+
+import 'package:crud_clean_bloc/core/service/sync_service.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/cache/local_storage.dart';
 import '../../../../core/errors/exception.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/network/network_checker.dart';
-import '../../domain/entities/book_entity.dart';
 import '../../domain/repositories/book_repository.dart';
 import '../../domain/usecases/usecase_params.dart';
 import '../datasources/book_local_datasource.dart';
@@ -21,24 +23,35 @@ class BooksRepositoryImpl implements BookRepository {
   final BookLocalDatasource bookLocalDatasource;
   final BookRemoteDatasource bookRemoteDatasource;
 
+  final SyncService syncService;
+
   BooksRepositoryImpl(
     this.localStorage,
     this.networkInfo,
     this.bookLocalDatasource,
     this.bookRemoteDatasource,
+    this.syncService,
   );
   @override
   Future<Either<Failure, void>> addBook(CreateBookParams params) async {
     try {
       final model = CreateBooksModel(
+        localId: DateTime.now().microsecondsSinceEpoch,
         title: params.title,
         author: params.author,
         createdAt: DateTime.now(),
         description: params.description,
-        coverUrl: params.coverUrl,
+        coverPath: params.coverPath,
+        coverUrl: null,
+        isSynced: false,
+        serverId: null,
       );
 
-      final result = await bookRemoteDatasource.createBook(model);
+      final result = await bookLocalDatasource.createBook(model);
+
+      if (networkInfo.isConnected) {
+        await syncService.syncBook();
+      }
 
       return Right(result);
     } on ServerException catch (e) {
@@ -51,31 +64,71 @@ class BooksRepositoryImpl implements BookRepository {
   @override
   Future<Either<Failure, void>> deleteBook(DeleteBookParams params) async {
     try {
-      final model = DeleteBookModel(id: params.id, coverUrl: params.coverUrl);
+      final localData = await bookLocalDatasource.getBookById(params.id);
 
-      final result = await bookRemoteDatasource.deleteBook(model);
+      await bookLocalDatasource.deleteBook(
+        DeleteBookModel(id: params.id, coverUrl: params.coverUrl),
+      );
 
-      return Right(result);
+      if (localData.serverId != null) {
+        await bookRemoteDatasource.deleteBook(
+          DeleteBookModel(
+            id: localData.serverId!,
+            coverUrl: localData.coverUrl!,
+          ),
+        );
+      }
+
+      return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
-    } catch (_) {
-      return const Left(ServerFailure('Gagal menghapus buku'));
+    } catch (e) {
+      log(e.toString());
+      return Left(ServerFailure('Gagal menghapus buku'));
     }
   }
 
   @override
-  Future<Either<Failure, List<BookEntity>>> getBooks() {
+  Future<Either<Failure, List<GetBooksModel>>> getBooks() {
     return networkInfo.check(
       connected: () async {
         try {
-          final listbook = await bookRemoteDatasource.getBooks();
-          await localStorage.save(
-            key: "library",
-            boxName: "book",
-            value: GetBooksModel.toMapList(listbook.cast<GetBooksModel>()),
-          );
+          final remoteBooks = await bookRemoteDatasource.getBooks();
+          final localBooks = await bookLocalDatasource.getBooks();
 
-          return Right(listbook);
+          final Map<int, GetBooksModel> localByServerId = {
+            for (final b in localBooks)
+              if (b.serverId != null) b.serverId!: b,
+          };
+
+          for (final remote in remoteBooks) {
+            final existingLocal = localByServerId[remote.serverId];
+
+            final localId =
+                existingLocal?.localId ?? DateTime.now().microsecondsSinceEpoch;
+
+            final model = GetBooksModel(
+              serverId: remote.serverId,
+              localId: localId,
+              title: remote.title,
+              author: remote.author,
+              description: remote.description,
+              createdAt: remote.createdAt,
+              coverUrl: remote.coverUrl,
+              coverPath: null,
+              isSynced: true,
+            );
+
+            await localStorage.save(
+              key: localId.toString(),
+              boxName: "book",
+              value: model.toLocalMap(),
+            );
+          }
+
+          final localBook = await bookLocalDatasource.getBooks();
+          log(localBook.toString());
+          return Right(localBook);
         } on ServerException catch (e) {
           return Left(ServerFailure(e.message));
         } catch (e) {
@@ -85,11 +138,13 @@ class BooksRepositoryImpl implements BookRepository {
       notConnected: () async {
         try {
           final listbook = await bookLocalDatasource.getBooks();
+          log(listbook.toString());
           return Right(listbook);
         } on CacheException catch (e) {
-          return Left(ServerFailure(e.message));
+          log(e.message.toString());
+          return Left(CacheFailure(e.message));
         } catch (_) {
-          return const Left(ServerFailure('Gagal mengupdate buku'));
+          return const Left(CacheFailure('Gagal mengupdate buku'));
         }
       },
     );

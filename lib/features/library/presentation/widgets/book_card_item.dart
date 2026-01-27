@@ -1,6 +1,9 @@
+import 'dart:io';
+
+import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
-import '../../domain/entities/book_entity.dart';
 import '../cubit/library/library_cubit.dart';
 import '../../../../routes/app_routes_path.dart';
 import 'package:flutter/material.dart';
@@ -10,21 +13,21 @@ import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class BookCardItem extends StatelessWidget {
-  final BookEntity? book;
+  final GetBooksModel? book;
   final bool isConnected;
   final bool isLoading;
+  bool? isSync;
 
-  const BookCardItem({
+  BookCardItem({
     super.key,
     this.book,
     this.isLoading = false,
+    this.isSync,
     required this.isConnected,
   });
 
   @override
   Widget build(BuildContext context) {
-    
-
     if (isLoading) {
       return _loadingCard();
     }
@@ -105,8 +108,19 @@ class BookCardItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  isSync != null && isSync! == false
+                      ? Text(
+                          "Not Sync",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyle.description4(
+                            fontWeight: AppTextStyle.regular,
+                            color: AppColor.danger600,
+                          ),
+                        )
+                      : SizedBox(),
                   Text(
-                    bookData.title ?? '-',
+                    bookData.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyle.body2(
@@ -114,9 +128,11 @@ class BookCardItem extends StatelessWidget {
                       color: AppColor.neutral900,
                     ),
                   ),
+                  SizedBox(width: 8.w),
+
                   SizedBox(height: 6.h),
                   Text(
-                    bookData.author ?? '-',
+                    bookData.author,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyle.body2(
@@ -140,11 +156,20 @@ class BookCardItem extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColor.neutral300),
-        image: (url != null && isConnected)
+        image: (url != null && isConnected && book!.coverPath == null)
             ? DecorationImage(image: NetworkImage(url), fit: BoxFit.cover)
+            : book!.coverPath != null
+            ? DecorationImage(
+                image: FileImage(File(book!.coverPath!)),
+                fit: BoxFit.cover,
+              )
             : null,
       ),
-      child: (url == null || url.isEmpty || !isConnected)
+      child:
+          (url == null &&
+              !isConnected &&
+              book!.coverPath == null &&
+              book!.coverPath!.isEmpty)
           ? Icon(Icons.cloud_off_outlined, color: AppColor.neutral400)
           : null,
     );

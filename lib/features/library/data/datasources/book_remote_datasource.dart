@@ -1,3 +1,4 @@
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/api/api_url.dart';
@@ -10,7 +11,7 @@ import '../models/upload_book_cover_model.dart';
 
 sealed class BookRemoteDatasource {
   Future<List<GetBooksModel>> getBooks();
-  Future<void> createBook(CreateBooksModel model);
+  Future<GetBooksModel> createBook(CreateBooksModel model);
   Future<String> uploadBookCover(UploadBookCoverModel model);
   Future<void> deleteBook(DeleteBookModel model);
   Future<void> updateBook(UpdateBooksModel model);
@@ -24,7 +25,7 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
     try {
       final response = await ApiUrl.book.select();
 
-      return GetBooksModel.fromJsonList(response);
+      return GetBooksModel.fromJsonRemoteList(response);
     } on PostgrestException catch (e) {
       throw ServerException(e.message);
     } catch (e) {
@@ -33,10 +34,15 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
   }
 
   @override
-  Future<void> createBook(CreateBooksModel model) async {
+  @override
+  Future<GetBooksModel> createBook(CreateBooksModel model) async {
     try {
-      await ApiUrl.book.insert(model.toMap());
-      return;
+      final response = await ApiUrl.book
+          .insert(model.toRemoteMap())
+          .select()
+          .single();
+
+      return GetBooksModel.fromRemoteJson(response);
     } on PostgrestException catch (e) {
       throw ServerException(e.message);
     } catch (e) {
@@ -47,9 +53,10 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
   @override
   Future<String> uploadBookCover(UploadBookCoverModel model) async {
     try {
+      final file = model.cover;
       final fileExt = model.cover.path.split('.').last;
       final fileName = '${model.title}.$fileExt';
-      await ApiUrl.bookStorage.upload(fileName, model.cover);
+      await ApiUrl.bookStorage.upload(fileName, file);
 
       final publicUrl = ApiUrl.bookStorage.getPublicUrl(fileName);
       return publicUrl;

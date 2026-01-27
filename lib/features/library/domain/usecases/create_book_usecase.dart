@@ -19,15 +19,17 @@ class Params extends Equatable {
   final String title;
   final String description;
   final String author;
-  final String coverUrl;
+  final String coverPath;
+  String? coverUrl;
 
-  const Params({
+  Params({
     required this.title,
     required this.description,
     required this.author,
-    required this.coverUrl,
+    required this.coverPath,
+    this.coverUrl,
   });
 
   @override
-  List<Object?> get props => [title, description, author, coverUrl];
+  List<Object?> get props => [title, description, author, coverPath, coverUrl];
 }
