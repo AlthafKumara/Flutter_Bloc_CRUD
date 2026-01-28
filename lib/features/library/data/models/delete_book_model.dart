@@ -1,8 +1,8 @@
 class DeleteBookModel {
-  final String coverUrl;
+  String? coverUrl;
   final int id;
 
-  DeleteBookModel({required this.id, required this.coverUrl});
+  DeleteBookModel({required this.id, this.coverUrl});
 
   factory DeleteBookModel.fromJson(Map<String, dynamic> json) {
     return DeleteBookModel(id: json['id'], coverUrl: json['cover_url']);

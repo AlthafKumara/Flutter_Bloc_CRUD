@@ -16,14 +16,14 @@ class UpdateBookUsecase implements UseCase<void, Params> {
 }
 
 class Params extends Equatable {
-  final int id;
+  final int localId;
   final String title;
   final String description;
   final String author;
   final String coverUrl;
 
   const Params({
-    required this.id,
+    required this.localId,
     required this.title,
     required this.description,
     required this.author,

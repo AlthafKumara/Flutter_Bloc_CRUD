@@ -1,4 +1,3 @@
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/api/api_url.dart';
@@ -33,7 +32,6 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
     }
   }
 
-  @override
   @override
   Future<GetBooksModel> createBook(CreateBooksModel model) async {
     try {
@@ -70,7 +68,9 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
   @override
   Future<void> updateBook(UpdateBooksModel model) async {
     try {
-      await ApiUrl.book.update(model.toMap()).inFilter("id", [model.id]);
+      await ApiUrl.book.update(model.toRemoteMap()).inFilter("id", [
+        model.serverId,
+      ]);
     } on PostgrestException catch (e) {
       throw ServerException(e.message);
     } catch (e) {
@@ -81,16 +81,18 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
   @override
   Future<void> deleteBook(DeleteBookModel model) async {
     try {
-      String coverUrl = model.coverUrl;
+      String? coverUrl = model.coverUrl;
 
-      final uri = Uri.parse(coverUrl);
-      final segments = uri.pathSegments;
+      if (coverUrl != null) {
+        final uri = Uri.parse(coverUrl);
+        final segments = uri.pathSegments;
 
-      final pathRelative = segments.sublist(5).join('/');
+        final pathRelative = segments.sublist(5).join('/');
 
-      final decodedPath = Uri.decodeFull(pathRelative);
+        final decodedPath = Uri.decodeFull(pathRelative);
 
-      await ApiUrl.bookStorage.remove([decodedPath]);
+        await ApiUrl.bookStorage.remove([decodedPath]);
+      }
 
       await ApiUrl.book.delete().inFilter("id", [model.id]);
     } on PostgrestException catch (e) {

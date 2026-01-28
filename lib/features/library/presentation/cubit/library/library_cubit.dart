@@ -92,7 +92,7 @@ class LibraryCubit extends Cubit<LibraryState> {
   }
 
   Future<void> updateBookWithOptionalCover({
-    required int id,
+    required int localId,
     required String title,
     required String author,
     required String description,
@@ -120,7 +120,7 @@ class LibraryCubit extends Cubit<LibraryState> {
 
     final updateResult = await _updateBookUsecase.call(
       UpdateBookParams(
-        id: id,
+        localId: localId,
         title: title,
         author: author,
         description: description,
@@ -134,11 +134,11 @@ class LibraryCubit extends Cubit<LibraryState> {
     );
   }
 
-  Future<void> deleteBook({required int id, required String coverUrl}) async {
+  Future<void> deleteBook({required int localId,String? coverUrl}) async {
     emit(DeleteBookLoadingState());
 
     final result = await _deleteBooksUsecase.call(
-      DeleteBookParams(id: id, coverUrl: coverUrl),
+      DeleteBookParams(localId: localId, coverUrl: coverUrl),
     );
 
     result.fold(

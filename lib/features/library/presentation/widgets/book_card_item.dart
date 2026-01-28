@@ -165,11 +165,7 @@ class BookCardItem extends StatelessWidget {
               )
             : null,
       ),
-      child:
-          (url == null &&
-              !isConnected &&
-              book!.coverPath == null &&
-              book!.coverPath!.isEmpty)
+      child: (url == null || !isConnected)
           ? Icon(Icons.cloud_off_outlined, color: AppColor.neutral400)
           : null,
     );

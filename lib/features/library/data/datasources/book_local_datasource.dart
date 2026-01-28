@@ -1,13 +1,12 @@
 import 'package:crud_clean_bloc/features/library/data/models/create_books_model.dart';
 import 'package:crud_clean_bloc/features/library/data/models/delete_book_model.dart';
-
 import '../../../../core/cache/local_storage.dart';
 import '../../../../core/errors/exception.dart';
 import '../models/get_books_model.dart';
 
 sealed class BookLocalDatasource {
   Future<void> createBook(CreateBooksModel model);
-
+  Future<void> updateBook(GetBooksModel model);
   Future<void> deleteBook(DeleteBookModel model);
   Future<void> updateAfterSync(GetBooksModel model);
   Future<List<GetBooksModel>> getBooks();
@@ -33,6 +32,19 @@ class BookLocalDatasourceImpl implements BookLocalDatasource {
   }
 
   @override
+  Future<void> updateBook(GetBooksModel model) async {
+    try {
+      await localStorage.save(
+        key: model.localId.toString(),
+        boxName: 'book',
+        value: model.toLocalMap(),
+      );
+    } catch (e) {
+      throw CacheException(e.toString());
+    }
+  }
+
+  @override
   Future<List<GetBooksModel>> getBooks() async {
     try {
       final response = await localStorage.loadAll(boxName: "book");
@@ -50,16 +62,12 @@ class BookLocalDatasourceImpl implements BookLocalDatasource {
 
   @override
   Future<GetBooksModel> getBookById(int id) async {
-    try {
-      final response = await localStorage.load(
-        key: id.toString(),
-        boxName: "book",
-      );
+    final response = await localStorage.load(
+      key: id.toString(),
+      boxName: "book",
+    );
 
-      return GetBooksModel.fromLocalMap(response as Map<String, dynamic>);
-    } catch (e) {
-      throw CacheException(e.toString());
-    }
+    return GetBooksModel.fromLocalMap(Map<String, dynamic>.from(response));
   }
 
   @override

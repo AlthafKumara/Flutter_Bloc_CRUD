@@ -60,21 +60,13 @@ class LibraryBookDetail extends StatelessWidget {
                 builder: (context, state) {
                   return GestureDetector(
                     onTap: () async {
-                      if (state is NetworkConnectedState) {
-                        final result = await context.pushNamed(
-                          AppRoutes.libraryFormBook.name,
-                          extra: bookdata,
-                        );
+                      final result = await context.pushNamed(
+                        AppRoutes.libraryFormBook.name,
+                        extra: bookdata,
+                      );
 
-                        if (result == true) {
-                          context.read<LibraryCubit>().getAllBooks();
-                        }
-                      } else if (state is NetworkDisconnectedState) {
-                        CustomSnackbar.show(
-                          context,
-                          message: 'No Internet Connection',
-                          backgroundColor: AppColor.danger600,
-                        );
+                      if (result == true) {
+                        context.read<LibraryCubit>().getAllBooks();
                       }
                     },
                     child: Container(
@@ -100,8 +92,8 @@ class LibraryBookDetail extends StatelessWidget {
                             if (state is NetworkConnectedState) {
                               context.pop();
                               context.read<LibraryCubit>().deleteBook(
-                                coverUrl: bookdata.coverUrl!,
-                                id: bookdata.localId!,
+                                coverUrl: bookdata.coverUrl ,
+                                localId: bookdata.localId!,
                               );
                             } else if (state is NetworkDisconnectedState) {
                               CustomSnackbar.show(

@@ -1,26 +1,46 @@
 import '../../domain/entities/book_entity.dart';
 
 class UpdateBooksModel extends BookEntity {
+  @override
+  final String title;
+  @override
+  final String author;
+  @override
+  final String description;
+  @override
+  String? coverUrl;
+  int? serverId;
+  int? localId;
+
+  bool? isSynced;
+
   UpdateBooksModel({
-    required super.id,
-    super.title,
-    super.author,
-    super.description,
+    this.serverId,
+    this.localId,
+    required this.title,
+    required this.author,
+    required this.description,
 
-    super.coverUrl,
-  });
+    this.isSynced = false,
+    this.coverUrl,
+  }) : super(
+         author: author,
+         title: title,
+         description: description,
+         coverUrl: coverUrl,
+       );
 
-  factory UpdateBooksModel.fromJson(Map<String, dynamic> json) {
-    return UpdateBooksModel(
-      id: json['id'],
-      title: json['title'],
-      author: json['author'],
-      description: json['description'],
-      coverUrl: json['cover_url'],
-    );
-  }
-  Map<String, dynamic> toMap() => {
-    'id': id,
+  Map<String, dynamic> toLocalMap() => {
+    'server_id': serverId,
+    'local_id': localId,
+    'title': title,
+    'author': author,
+    'description': description,
+    'cover_url': coverUrl,
+    'is_synced': isSynced,
+  };
+
+  Map<String, dynamic> toRemoteMap() => {
     'title': title,
     'author': author,
     'description': description,

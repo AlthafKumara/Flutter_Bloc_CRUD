@@ -14,7 +14,6 @@ import '../datasources/book_remote_datasource.dart';
 import '../models/create_books_model.dart';
 import '../models/delete_book_model.dart';
 import '../models/get_books_model.dart';
-import '../models/update_books_model.dart';
 import '../models/upload_book_cover_model.dart';
 
 class BooksRepositoryImpl implements BookRepository {
@@ -64,10 +63,10 @@ class BooksRepositoryImpl implements BookRepository {
   @override
   Future<Either<Failure, void>> deleteBook(DeleteBookParams params) async {
     try {
-      final localData = await bookLocalDatasource.getBookById(params.id);
+      final localData = await bookLocalDatasource.getBookById(params.localId);
 
       await bookLocalDatasource.deleteBook(
-        DeleteBookModel(id: params.id, coverUrl: params.coverUrl),
+        DeleteBookModel(id: params.localId, coverUrl: params.coverUrl),
       );
 
       if (localData.serverId != null) {
@@ -153,16 +152,21 @@ class BooksRepositoryImpl implements BookRepository {
   @override
   Future<Either<Failure, void>> updateBook(UpdateBookParams params) async {
     try {
-      final model = UpdateBooksModel(
-        id: params.id,
+      final oldBook = await bookLocalDatasource.getBookById(params.localId);
+
+      final updateBook = oldBook.copyWith(
         title: params.title,
         author: params.author,
         description: params.description,
         coverUrl: params.coverUrl,
+        isSynced: false,
       );
 
-      final result = await bookRemoteDatasource.updateBook(model);
+      final result = await bookLocalDatasource.updateBook(updateBook);
 
+      if (networkInfo.isConnected) {
+        await syncService.syncBook();
+      }
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));

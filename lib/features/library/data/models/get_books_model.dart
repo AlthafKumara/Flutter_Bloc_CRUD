@@ -102,6 +102,9 @@ class GetBooksModel extends BookEntity {
   GetBooksModel copyWith({
     int? serverId,
     int? localId,
+    String? title,
+    String? author,
+    String? description,
     String? coverPath,
     String? coverUrl,
     bool? isSynced,
@@ -109,9 +112,9 @@ class GetBooksModel extends BookEntity {
     return GetBooksModel(
       serverId: serverId ?? this.serverId,
       localId: localId ?? this.localId,
-      title: title,
-      author: author,
-      description: description,
+      title: title ?? this.title,
+      author: author ?? this.author,
+      description: description ?? this.description,
       createdAt: createdAt,
       coverPath: coverPath ?? this.coverPath,
       coverUrl: coverUrl ?? this.coverUrl,

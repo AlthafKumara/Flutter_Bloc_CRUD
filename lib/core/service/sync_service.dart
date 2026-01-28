@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:crud_clean_bloc/features/library/data/datasources/book_local_datasource.dart';
 import 'package:crud_clean_bloc/features/library/data/datasources/book_remote_datasource.dart';
 import 'package:crud_clean_bloc/features/library/data/models/create_books_model.dart';
+import 'package:crud_clean_bloc/features/library/data/models/update_books_model.dart';
 import 'package:crud_clean_bloc/features/library/data/models/upload_book_cover_model.dart';
 
 abstract class SyncService {
@@ -19,37 +20,61 @@ class SyncServiceImpl implements SyncService {
   });
   @override
   Future<void> syncBook() async {
-    log("DIJALANKAN");
-
     final unsyncedBooks = await bookLocalDatasource.getBooksUnsynced();
 
     for (final book in unsyncedBooks) {
-      try {
-        final coverUrl = await bookRemoteDatasource.uploadBookCover(
-          UploadBookCoverModel(title: book.title, cover: File(book.coverPath!)),
-        );
+      // ============================ Create ==================================
+      if (book.serverId == null) {
+        log("Create Dijalankan");
+        try {
+          final coverUrl = await bookRemoteDatasource.uploadBookCover(
+            UploadBookCoverModel(
+              title: book.title,
+              cover: File(book.coverPath!),
+            ),
+          );
 
-        final uploadBook = await bookRemoteDatasource.createBook(
-          CreateBooksModel(
-            localId: book.localId,
-            title: book.title,
-            author: book.author,
-            createdAt: book.createdAt,
-            description: book.description,
-            coverPath: book.coverPath,
+          final uploadBook = await bookRemoteDatasource.createBook(
+            CreateBooksModel(
+              localId: book.localId,
+              title: book.title,
+              author: book.author,
+              createdAt: book.createdAt,
+              description: book.description,
+              coverPath: book.coverPath,
+              coverUrl: coverUrl,
+            ),
+          );
+
+          final syncBook = book.copyWith(
+            serverId: uploadBook.serverId,
             coverUrl: coverUrl,
-          ),
-        );
+            isSynced: true,
+          );
 
-        final syncBook = book.copyWith(
-          serverId: uploadBook.serverId,
-          coverUrl: coverUrl,
-          isSynced: true,
-        );
+          await bookLocalDatasource.updateAfterSync(syncBook);
+        } catch (e) {
+          log(e.toString());
+        }
+      } else {
+        log("Update Dijalankan");
+        try {
+          await bookRemoteDatasource.updateBook(
+            UpdateBooksModel(
+              localId: book.localId,
+              serverId: book.serverId,
+              title: book.title,
+              author: book.author,
+              description: book.description,
+              coverUrl: book.coverUrl,
+            ),
+          );
+          final syncBook = book.copyWith(isSynced: true);
 
-        await bookLocalDatasource.updateAfterSync(syncBook);
-      } catch (e) {
-        log(e.toString());
+          await bookLocalDatasource.updateAfterSync(syncBook);
+        } catch (e) {
+          log(e.toString());
+        }
       }
     }
   }
