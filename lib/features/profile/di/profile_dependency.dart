@@ -1,9 +1,8 @@
+import '../../../configs/injector/injector_conf.dart';
 import '../../../core/cache/hive_local_storage.dart';
 import '../../../core/cache/local_storage.dart';
 import '../../../core/network/network_checker.dart';
 import '../data/datasources/profile_local_datasource.dart';
-
-import '../../../configs/injector/injector_conf.dart';
 import '../data/datasources/profile_remote_datasource.dart';
 import '../data/repositories/profile_repository_impl.dart';
 import '../domain/repositories/profile_repository.dart';

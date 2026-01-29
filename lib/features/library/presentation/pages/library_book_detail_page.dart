@@ -1,6 +1,6 @@
-import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
-import 'package:crud_clean_bloc/core/cubit/network_cubit/network_state.dart';
-import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+import '../../../../core/cubit/network_cubit/network_cubit.dart';
+import '../../../../core/cubit/network_cubit/network_state.dart';
+import '../../data/models/local/local_book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,7 +20,7 @@ class LibraryBookDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bookdata = GoRouterState.of(context).extra as GetBooksModel;
+    final bookdata = GoRouterState.of(context).extra as LocalBookModel;
 
     return BlocConsumer<LibraryCubit, LibraryState>(
       listener: (context, state) {
@@ -89,19 +89,11 @@ class LibraryBookDetail extends StatelessWidget {
                           message:
                               "Apakah anda yakin ingin menghapus buku ini ?",
                           onTap: () {
-                            if (state is NetworkConnectedState) {
-                              context.pop();
-                              context.read<LibraryCubit>().deleteBook(
-                                coverUrl: bookdata.coverUrl ,
-                                localId: bookdata.localId!,
-                              );
-                            } else if (state is NetworkDisconnectedState) {
-                              CustomSnackbar.show(
-                                context,
-                                message: 'No Internet Connection',
-                                backgroundColor: AppColor.danger600,
-                              );
-                            }
+                            context.pop();
+                            context.read<LibraryCubit>().deleteBook(
+                              coverUrl: bookdata.coverUrl,
+                              localId: bookdata.localId!,
+                            );
                           },
                         ),
                       );
@@ -131,7 +123,7 @@ class LibraryBookDetail extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        bookdata.title,
+                        bookdata.title ?? "Error Load Title",
                         style: AppTextStyle.heading4(
                           fontWeight: AppTextStyle.medium,
                           color: AppColor.neutral900,
@@ -167,7 +159,7 @@ class LibraryBookDetail extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              bookdata.author,
+                              bookdata.author ?? "Error Load Author",
                               style: AppTextStyle.description2(
                                 fontWeight: AppTextStyle.medium,
                                 color: AppColor.neutral900,
@@ -197,7 +189,7 @@ class LibraryBookDetail extends StatelessWidget {
                       ),
                       SizedBox(height: 12.h),
                       Text(
-                        bookdata.description,
+                        bookdata.description ?? "Error Load Description",
                         style: AppTextStyle.description2(
                           fontWeight: AppTextStyle.regular,
                           color: AppColor.neutral500,

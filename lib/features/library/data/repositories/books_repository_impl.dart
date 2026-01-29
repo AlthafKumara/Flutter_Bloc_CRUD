@@ -1,8 +1,7 @@
 import 'dart:developer';
-
-import 'package:crud_clean_bloc/core/service/sync_service.dart';
+import '../../../../core/service/sync_service.dart';
+import '../models/local/local_book_model.dart';
 import 'package:dartz/dartz.dart';
-
 import '../../../../core/cache/local_storage.dart';
 import '../../../../core/errors/exception.dart';
 import '../../../../core/errors/failure.dart';
@@ -11,10 +10,7 @@ import '../../domain/repositories/book_repository.dart';
 import '../../domain/usecases/usecase_params.dart';
 import '../datasources/book_local_datasource.dart';
 import '../datasources/book_remote_datasource.dart';
-import '../models/create_books_model.dart';
-import '../models/delete_book_model.dart';
-import '../models/get_books_model.dart';
-import '../models/upload_book_cover_model.dart';
+import '../models/remote/upload_book_cover_model.dart';
 
 class BooksRepositoryImpl implements BookRepository {
   final LocalStorage localStorage;
@@ -34,7 +30,7 @@ class BooksRepositoryImpl implements BookRepository {
   @override
   Future<Either<Failure, void>> addBook(CreateBookParams params) async {
     try {
-      final model = CreateBooksModel(
+      final model = LocalBookModel(
         localId: DateTime.now().microsecondsSinceEpoch,
         title: params.title,
         author: params.author,
@@ -44,6 +40,7 @@ class BooksRepositoryImpl implements BookRepository {
         coverUrl: null,
         isSynced: false,
         serverId: null,
+        markAsDeleted: false,
       );
 
       final result = await bookLocalDatasource.createBook(model);
@@ -65,49 +62,46 @@ class BooksRepositoryImpl implements BookRepository {
     try {
       final localData = await bookLocalDatasource.getBookById(params.localId);
 
-      await bookLocalDatasource.deleteBook(
-        DeleteBookModel(id: params.localId, coverUrl: params.coverUrl),
+      final deleteStatusBook = localData.copyWith(
+        markAsDeleted: true,
+        isSynced: false,
       );
 
-      if (localData.serverId != null) {
-        await bookRemoteDatasource.deleteBook(
-          DeleteBookModel(
-            id: localData.serverId!,
-            coverUrl: localData.coverUrl!,
-          ),
-        );
+      final result = await bookLocalDatasource.updateBook(deleteStatusBook);
+
+      if (networkInfo.isConnected) {
+        await syncService.syncBook();
       }
 
-      return const Right(null);
+      return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (e) {
-      log(e.toString());
       return Left(ServerFailure('Gagal menghapus buku'));
     }
   }
 
   @override
-  Future<Either<Failure, List<GetBooksModel>>> getBooks() {
+  Future<Either<Failure, List<LocalBookModel>>> getBooks() {
     return networkInfo.check(
       connected: () async {
         try {
           final remoteBooks = await bookRemoteDatasource.getBooks();
-          final localBooks = await bookLocalDatasource.getBooks();
+          final localBooks = await bookLocalDatasource.getBooksForUi();
 
-          final Map<int, GetBooksModel> localByServerId = {
+          final Map<int, LocalBookModel> localByServerId = {
             for (final b in localBooks)
               if (b.serverId != null) b.serverId!: b,
           };
 
           for (final remote in remoteBooks) {
-            final existingLocal = localByServerId[remote.serverId];
+            final existingLocal = localByServerId[remote.id];
 
             final localId =
                 existingLocal?.localId ?? DateTime.now().microsecondsSinceEpoch;
 
-            final model = GetBooksModel(
-              serverId: remote.serverId,
+            final model = LocalBookModel(
+              serverId: remote.id,
               localId: localId,
               title: remote.title,
               author: remote.author,
@@ -116,6 +110,7 @@ class BooksRepositoryImpl implements BookRepository {
               coverUrl: remote.coverUrl,
               coverPath: null,
               isSynced: true,
+              markAsDeleted: false,
             );
 
             await localStorage.save(
@@ -125,8 +120,7 @@ class BooksRepositoryImpl implements BookRepository {
             );
           }
 
-          final localBook = await bookLocalDatasource.getBooks();
-          log(localBook.toString());
+          final localBook = await bookLocalDatasource.getBooksForUi();
           return Right(localBook);
         } on ServerException catch (e) {
           return Left(ServerFailure(e.message));
@@ -136,8 +130,7 @@ class BooksRepositoryImpl implements BookRepository {
       },
       notConnected: () async {
         try {
-          final listbook = await bookLocalDatasource.getBooks();
-          log(listbook.toString());
+          final listbook = await bookLocalDatasource.getBooksForUi();
           return Right(listbook);
         } on CacheException catch (e) {
           log(e.message.toString());

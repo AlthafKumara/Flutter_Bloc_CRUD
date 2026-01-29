@@ -1,13 +1,11 @@
-import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
-import 'package:crud_clean_bloc/core/cubit/network_cubit/network_state.dart';
-import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+import '../../../../core/cubit/network_cubit/network_cubit.dart';
+import '../../../../core/cubit/network_cubit/network_state.dart';
+import '../../data/models/local/local_book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../core/constants/assets_constant.dart';
-
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
 import '../../../../routes/app_routes_path.dart';
@@ -124,7 +122,7 @@ class LibraryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildList(List<GetBooksModel> books, bool isConnected) {
+  Widget _buildList(List<LocalBookModel> books, bool isConnected) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {

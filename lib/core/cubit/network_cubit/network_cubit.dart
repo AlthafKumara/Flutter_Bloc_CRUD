@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:crud_clean_bloc/core/network/network_checker.dart';
-import 'package:crud_clean_bloc/core/service/sync_service.dart';
+import '../../network/network_checker.dart';
+import '../../service/sync_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'network_state.dart';

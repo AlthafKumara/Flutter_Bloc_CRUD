@@ -1,4 +1,4 @@
-import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+import '../../data/models/local/local_book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -100,7 +100,7 @@ class LibraryFormBook extends StatelessWidget {
       },
       child: BlocBuilder<LibraryFormCubit, LibraryFormState>(
         builder: (context, state) {
-          final bookdata = GoRouterState.of(context).extra as GetBooksModel?;
+          final bookdata = GoRouterState.of(context).extra as LocalBookModel?;
 
           return Scaffold(
             backgroundColor: AppColor.neutral100,

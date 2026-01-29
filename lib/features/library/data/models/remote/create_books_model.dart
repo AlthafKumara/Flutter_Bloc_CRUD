@@ -1,39 +1,22 @@
 // ignore_for_file: annotate_overrides
 
-import '../../domain/entities/book_entity.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import '../../../domain/entities/book_entity.dart';
 
-part 'create_books_model.g.dart';
-
-@HiveType(typeId: 1)
 class CreateBooksModel extends BookEntity {
-  @HiveField(0)
-  final String title;
-  @HiveField(1)
-  final String author;
-  @HiveField(2)
-  final String description;
-  @HiveField(3)
-  final DateTime createdAt;
-  @HiveField(4)
-  int? serverId;
-  @HiveField(5)
-  int? localId;
-  @HiveField(6)
-  String? coverPath;
-  @HiveField(7)
+  int? id;
+  String? title;
+  String? author;
+  String? description;
+  DateTime? createdAt;
   String? coverUrl;
-  @HiveField(8)
   bool? isSynced;
 
   CreateBooksModel({
-    this.serverId,
-    this.localId,
-    required this.title,
-    required this.author,
-    required this.description,
-    required this.createdAt,
-    this.coverPath,
+    this.id,
+    this.title,
+    this.author,
+    this.description,
+    this.createdAt,
     this.isSynced = false,
     this.coverUrl,
   }) : super(
@@ -46,33 +29,28 @@ class CreateBooksModel extends BookEntity {
 
   factory CreateBooksModel.fromLocalMap(Map<String, dynamic> map) {
     return CreateBooksModel(
-      serverId: map['server_id'],
-      localId: map['local_id'],
+      id: map['id'],
       title: map['title'],
       author: map['author'],
       description: map['description'],
       createdAt: DateTime.parse(map['created_at']),
-      coverPath: map['cover_path'],
       coverUrl: map['cover_url'],
       isSynced: map['is_synced'],
     );
   }
 
   CreateBooksModel copyWith({
-    int? serverId,
-    int? localId,
+    int? id,
     String? coverPath,
     String? coverUrl,
     bool? isSynced,
   }) {
     return CreateBooksModel(
-      serverId: serverId ?? this.serverId,
-      localId: localId ?? this.localId,
+      id: id ?? this.id,
       title: title,
       author: author,
       description: description,
       createdAt: createdAt,
-      coverPath: coverPath ?? this.coverPath,
       coverUrl: coverUrl ?? this.coverUrl,
       isSynced: isSynced ?? this.isSynced,
     );
@@ -82,18 +60,16 @@ class CreateBooksModel extends BookEntity {
     'title': title,
     'author': author,
     'description': description,
-    'created_at': createdAt.toIso8601String(),
+    'created_at': createdAt!.toIso8601String(),
     'cover_url': coverUrl,
   };
 
   Map<String, dynamic> toLocalMap() => {
-    'server_id': serverId,
-    'local_id': localId,
+    'id': id,
     'title': title,
     'author': author,
     'description': description,
-    'created_at': createdAt.toIso8601String(),
-    'cover_path': coverPath,
+    'created_at': createdAt!.toIso8601String(),
     'cover_url': coverUrl,
     'is_synced': isSynced,
   };

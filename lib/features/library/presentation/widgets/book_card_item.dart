@@ -1,6 +1,6 @@
 import 'dart:io';
-
-import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:crud_clean_bloc/features/library/data/models/local/local_book_model.dart';
 
 import '../../../../core/themes/app_color.dart';
 import '../../../../core/themes/app_text_style.dart';
@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class BookCardItem extends StatelessWidget {
-  final GetBooksModel? book;
+  final LocalBookModel? book;
   final bool isConnected;
   final bool isLoading;
   bool? isSync;
@@ -120,7 +120,7 @@ class BookCardItem extends StatelessWidget {
                         )
                       : SizedBox(),
                   Text(
-                    bookData.title,
+                    bookData.title!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyle.body2(
@@ -132,7 +132,7 @@ class BookCardItem extends StatelessWidget {
 
                   SizedBox(height: 6.h),
                   Text(
-                    bookData.author,
+                    bookData.author!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyle.body2(
@@ -150,24 +150,55 @@ class BookCardItem extends StatelessWidget {
   }
 
   Widget _bookCover(String? url) {
-    return Container(
-      width: 88.w,
-      height: 118.h,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColor.neutral300),
-        image: (url != null && isConnected && book!.coverPath == null)
-            ? DecorationImage(image: NetworkImage(url), fit: BoxFit.cover)
-            : book!.coverPath != null
-            ? DecorationImage(
-                image: FileImage(File(book!.coverPath!)),
-                fit: BoxFit.cover,
-              )
+    if (url != null && isConnected) {
+      return CachedNetworkImage(
+        imageUrl: url,
+        imageBuilder: (context, imageProvider) => Container(
+          width: 88.w,
+          height: 118.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColor.neutral300),
+            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+          ),
+        ),
+        placeholder: (context, url) => Container(
+          width: 88.w,
+          height: 118.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColor.neutral300),
+          ),
+          child: Icon(Icons.cloud_off_outlined, color: AppColor.neutral400),
+        ),
+        errorWidget: (context, url, error) => Container(
+          width: 88.w,
+          height: 118.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColor.neutral300),
+          ),
+          child: Icon(Icons.cloud_off_outlined, color: AppColor.neutral400),
+        ),
+      );
+    } else {
+      return Container(
+        width: 88.w,
+        height: 118.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: AppColor.neutral300),
+          image: book!.coverPath != null
+              ? DecorationImage(
+                  image: FileImage(File(book!.coverPath!)),
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
+        child: (url == null || !isConnected || book!.coverPath == null)
+            ? Icon(Icons.cloud_off_outlined, color: AppColor.neutral400)
             : null,
-      ),
-      child: (url == null || !isConnected)
-          ? Icon(Icons.cloud_off_outlined, color: AppColor.neutral400)
-          : null,
-    );
+      );
+    }
   }
 }

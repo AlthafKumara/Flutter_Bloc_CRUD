@@ -1,4 +1,4 @@
-import 'package:crud_clean_bloc/core/service/sync_service.dart';
+import '../../../core/service/sync_service.dart';
 
 import '../../../configs/injector/injector_conf.dart';
 import '../../../core/cache/hive_local_storage.dart';

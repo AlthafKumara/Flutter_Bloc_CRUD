@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:crud_clean_bloc/features/library/data/models/get_books_model.dart';
+import '../../../data/models/local/local_book_model.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/usecases/usecase.dart';
@@ -30,7 +30,7 @@ class LibraryCubit extends Cubit<LibraryState> {
     this._updateBookUsecase,
   ) : super(LibraryInitial());
 
-  List<GetBooksModel> allbooks = [];
+  List<LocalBookModel> allbooks = [];
 
   // ================= GET ALL BOOK =================
   Future<void> getAllBooks() async {
@@ -56,8 +56,8 @@ class LibraryCubit extends Cubit<LibraryState> {
     final lower = keyword.toLowerCase();
 
     final filtered = allbooks.where((book) {
-      return book.title.toLowerCase().contains(lower) ||
-          book.author.toLowerCase().contains(lower);
+      return book.title!.toLowerCase().contains(lower) ||
+          book.author!.toLowerCase().contains(lower);
     }).toList();
 
     emit(GetAllBookSuccessState(filtered));

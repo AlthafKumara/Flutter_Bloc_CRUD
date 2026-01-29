@@ -1,14 +1,14 @@
-import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
-import 'package:crud_clean_bloc/core/service/sync_service.dart';
-import 'package:crud_clean_bloc/features/library/data/datasources/book_local_datasource.dart';
-import 'package:crud_clean_bloc/features/library/data/datasources/book_remote_datasource.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../../core/cache/hive_local_storage.dart';
 import '../../core/cache/local_storage.dart';
+import '../../core/cubit/network_cubit/network_cubit.dart';
 import '../../core/network/network_checker.dart';
+import '../../core/service/sync_service.dart';
 import '../../features/auth/di/auth_dependency.dart';
+import '../../features/library/data/datasources/book_local_datasource.dart';
+import '../../features/library/data/datasources/book_remote_datasource.dart';
 import '../../features/library/di/library_dependency.dart';
 import '../../features/profile/di/profile_dependency.dart';
 import '../../routes/app_routes_conf.dart';

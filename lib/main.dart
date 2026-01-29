@@ -1,4 +1,5 @@
-import 'package:crud_clean_bloc/core/cubit/network_cubit/network_cubit.dart';
+import 'core/cubit/network_cubit/network_cubit.dart';
+import 'features/library/data/models/local/local_book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,7 +8,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'configs/injector/injector_conf.dart';
-import 'features/library/data/models/get_books_model.dart';
+
 import 'features/profile/data/models/profile_model.dart';
 import 'routes/app_routes_conf.dart';
 
@@ -24,7 +25,7 @@ void main() async {
 
   // =================== HIVE ===========================
   await Hive.initFlutter();
-  Hive.registerAdapter(GetBooksModelAdapter());
+  Hive.registerAdapter(LocalBookModelAdapter());
   Hive.registerAdapter(ProfileModelAdapter());
 
   // =================== INJECTOR ===========================

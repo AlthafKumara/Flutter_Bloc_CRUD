@@ -1,41 +1,46 @@
-// ignore_for_file: annotate_overrides
+import '../../../domain/entities/book_entity.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:hive_flutter/adapters.dart';
+part 'local_book_model.g.dart';
 
-import '../../domain/entities/book_entity.dart';
-
-part 'get_books_model.g.dart';
-
-@HiveType(typeId: 0)
-class GetBooksModel extends BookEntity {
+@HiveType(typeId: 5)
+class LocalBookModel extends BookEntity {
+  @override
   @HiveField(0)
-  final String title;
+  String? title;
+  @override
   @HiveField(1)
-  final String author;
+  String? author;
+  @override
   @HiveField(2)
-  final String description;
+  String? description;
+  @override
   @HiveField(3)
-  final DateTime createdAt;
+  DateTime? createdAt;
   @HiveField(4)
   int? serverId;
   @HiveField(5)
   int? localId;
   @HiveField(6)
   String? coverPath;
+  @override
   @HiveField(7)
   String? coverUrl;
   @HiveField(8)
   bool? isSynced;
+  @HiveField(9)
+  bool? markAsDeleted;
 
-  GetBooksModel({
+  LocalBookModel({
     this.serverId,
     this.localId,
-    required this.title,
-    required this.description,
-    required this.createdAt,
-    required this.author,
+    this.title,
+    this.description,
+    this.createdAt,
+    this.author,
     this.coverPath,
     this.isSynced = false,
+    this.markAsDeleted = false,
     this.coverUrl,
   }) : super(
          id: serverId,
@@ -45,8 +50,8 @@ class GetBooksModel extends BookEntity {
          coverUrl: coverUrl,
        );
 
-  factory GetBooksModel.fromLocalMap(Map<String, dynamic> map) {
-    return GetBooksModel(
+  factory LocalBookModel.fromLocalMap(Map<String, dynamic> map) {
+    return LocalBookModel(
       serverId: map['server_id'],
       localId: map['local_id'],
       title: map['title'],
@@ -56,11 +61,12 @@ class GetBooksModel extends BookEntity {
       coverPath: map['cover_path'],
       coverUrl: map['cover_url'],
       isSynced: map['is_synced'],
+      markAsDeleted: map['mark_as_deleted'],
     );
   }
 
-  factory GetBooksModel.fromRemoteJson(Map<String, dynamic> json) {
-    return GetBooksModel(
+  factory LocalBookModel.fromRemoteJson(Map<String, dynamic> json) {
+    return LocalBookModel(
       serverId: json['id'],
       localId: json['id'],
       title: json['title'],
@@ -70,15 +76,16 @@ class GetBooksModel extends BookEntity {
       coverPath: json['cover_path'] ?? "",
       createdAt: DateTime.parse(json['created_at']),
       isSynced: true,
+      markAsDeleted: false,
     );
   }
 
-  static List<GetBooksModel> fromMapLocalList(List<dynamic> mapList) {
-    return mapList.map((json) => GetBooksModel.fromLocalMap(json)).toList();
+  static List<LocalBookModel> fromMapLocalList(List<dynamic> mapList) {
+    return mapList.map((json) => LocalBookModel.fromLocalMap(json)).toList();
   }
 
-  static List<GetBooksModel> fromJsonRemoteList(List<dynamic> mapList) {
-    return mapList.map((json) => GetBooksModel.fromRemoteJson(json)).toList();
+  static List<LocalBookModel> fromJsonRemoteList(List<dynamic> mapList) {
+    return mapList.map((json) => LocalBookModel.fromRemoteJson(json)).toList();
   }
 
   Map<String, dynamic> toLocalMap() {
@@ -88,18 +95,19 @@ class GetBooksModel extends BookEntity {
       'title': title,
       'author': author,
       'description': description,
-      'created_at': createdAt.toIso8601String(),
+      'created_at': createdAt!.toIso8601String(),
       'cover_path': coverPath,
       'cover_url': coverUrl,
       'is_synced': isSynced ?? false,
+      "mark_as_deleted": markAsDeleted ?? false,
     };
   }
 
-  static List<Map<String, dynamic>> toLocalMapList(List<GetBooksModel> books) {
+  static List<Map<String, dynamic>> toLocalMapList(List<LocalBookModel> books) {
     return books.map((e) => e.toLocalMap()).toList();
   }
 
-  GetBooksModel copyWith({
+  LocalBookModel copyWith({
     int? serverId,
     int? localId,
     String? title,
@@ -108,8 +116,9 @@ class GetBooksModel extends BookEntity {
     String? coverPath,
     String? coverUrl,
     bool? isSynced,
+    bool? markAsDeleted,
   }) {
-    return GetBooksModel(
+    return LocalBookModel(
       serverId: serverId ?? this.serverId,
       localId: localId ?? this.localId,
       title: title ?? this.title,
@@ -119,11 +128,12 @@ class GetBooksModel extends BookEntity {
       coverPath: coverPath ?? this.coverPath,
       coverUrl: coverUrl ?? this.coverUrl,
       isSynced: isSynced ?? this.isSynced,
+      markAsDeleted: markAsDeleted ?? this.markAsDeleted,
     );
   }
 
   @override
   String toString() {
-    return "GetBooksModel{serverId: $serverId, localId: $localId, title: $title, author: $author, description: $description, createdAt: $createdAt, coverUrl: $coverUrl, coverPath: $coverPath, isSynced: $isSynced}";
+    return "GetBooksModel{serverId: $serverId, localId: $localId, title: $title, author: $author, description: $description, createdAt: $createdAt, coverUrl: $coverUrl, coverPath: $coverPath, isSynced: $isSynced, markAsDeleted: $markAsDeleted}";
   }
 }

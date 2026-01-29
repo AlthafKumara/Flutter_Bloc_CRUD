@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import '../../domain/entities/book_entity.dart';
+import '../../../domain/entities/book_entity.dart';
 
 class UploadBookCoverModel extends BookEntity {
   final File cover;

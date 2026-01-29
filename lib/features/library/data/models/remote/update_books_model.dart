@@ -1,4 +1,4 @@
-import '../../domain/entities/book_entity.dart';
+import '../../../domain/entities/book_entity.dart';
 
 class UpdateBooksModel extends BookEntity {
   @override
