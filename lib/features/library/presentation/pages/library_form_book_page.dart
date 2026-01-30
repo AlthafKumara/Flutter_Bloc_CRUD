@@ -46,7 +46,7 @@ class LibraryFormBook extends StatelessWidget {
   void submitUpdate(
     BuildContext context, {
     required int localId,
-    required String oldCoverUrl,
+    String? oldCoverUrl,
   }) {
     final formState = context.read<LibraryFormCubit>().state;
 
@@ -167,7 +167,7 @@ class LibraryFormBook extends StatelessWidget {
                     submitUpdate(
                       context,
                       localId: bookdata.localId!,
-                      oldCoverUrl: bookdata.coverUrl!,
+                      oldCoverUrl: bookdata.coverUrl ?? "",
                     );
                   } else {
                     submitAdd(context);

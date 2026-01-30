@@ -1,10 +1,8 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crud_clean_bloc/features/library/data/models/local/local_book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../core/themes/app_color.dart';
 import '../cubit/library_form/library_form_state.dart';
 

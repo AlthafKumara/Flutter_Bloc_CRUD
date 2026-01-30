@@ -75,13 +75,17 @@ class BookLocalDatasourceImpl implements BookLocalDatasource {
   @override
   Future<List<LocalBookModel>> getBooksForUi() async {
     final books = await getBooks();
-    return books.where((b) => !b.markAsDeleted!).toList();
+    final result = books.where((b) => !b.markAsDeleted!).toList()
+      ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+    return result;
   }
 
   @override
   Future<List<LocalBookModel>> getBooksUnsynced() async {
     final books = await getBooks();
-    return books.where((b) => !b.isSynced!).toList();
+    final result = books.where((b) => !b.isSynced!).toList();
+    return result;
   }
 
   @override

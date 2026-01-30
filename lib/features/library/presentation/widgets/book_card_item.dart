@@ -150,7 +150,7 @@ class BookCardItem extends StatelessWidget {
   }
 
   Widget _bookCover(String? url) {
-    if (url != null && isConnected) {
+    if (url != null) {
       return CachedNetworkImage(
         imageUrl: url,
         imageBuilder: (context, imageProvider) => Container(
@@ -195,7 +195,7 @@ class BookCardItem extends StatelessWidget {
                 )
               : null,
         ),
-        child: (url == null || !isConnected || book!.coverPath == null)
+        child: (url == null || book!.coverPath == null)
             ? Icon(Icons.cloud_off_outlined, color: AppColor.neutral400)
             : null,
       );

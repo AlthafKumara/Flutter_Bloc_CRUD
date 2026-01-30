@@ -96,12 +96,12 @@ class LibraryCubit extends Cubit<LibraryState> {
     required String title,
     required String author,
     required String description,
-    required String oldCoverUrl,
+    String? oldCoverUrl,
     File? newCoverFile,
   }) async {
     emit(UpdateBookLoadingState());
 
-    String coverUrl = oldCoverUrl;
+    String? coverUrl = oldCoverUrl;
 
     if (newCoverFile != null) {
       final uploadResult = await _uploadBookCoverUsecase.call(
