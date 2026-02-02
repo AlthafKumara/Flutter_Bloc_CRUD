@@ -152,6 +152,7 @@ class BooksRepositoryImpl implements BookRepository {
         author: params.author,
         description: params.description,
         coverUrl: params.coverUrl,
+        coverPath: params.coverPath,
         isSynced: false,
       );
 
@@ -176,6 +177,7 @@ class BooksRepositoryImpl implements BookRepository {
       final model = UploadBookCoverModel(
         title: params.title,
         cover: params.file,
+        id: params.id,
       );
 
       final result = await bookRemoteDatasource.uploadBookCover(model);

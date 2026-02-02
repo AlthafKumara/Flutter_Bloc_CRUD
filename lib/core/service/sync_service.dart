@@ -1,5 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:crud_clean_bloc/features/library/data/models/remote/delete_cover_book_model.dart';
+
 import '../../features/library/data/datasources/book_local_datasource.dart';
 import '../../features/library/data/datasources/book_remote_datasource.dart';
 import '../../features/library/data/models/remote/create_books_model.dart';
@@ -30,6 +33,7 @@ class SyncServiceImpl implements SyncService {
         try {
           final coverUrl = await bookRemoteDatasource.uploadBookCover(
             UploadBookCoverModel(
+              id: book.localId,
               title: book.title,
               cover: File(book.coverPath!),
             ),
@@ -59,6 +63,24 @@ class SyncServiceImpl implements SyncService {
         // ============================ Update ==================================
         log("Update Dijalankan");
         try {
+          if (book.coverPath != null) {
+            if (book.coverUrl != null) {
+              await bookRemoteDatasource.deleteCoverBook(
+                DeleteCoverBookModel(coverUrl: book.coverUrl!),
+              );
+            }
+
+            final coverUrl = await bookRemoteDatasource.uploadBookCover(
+              UploadBookCoverModel(
+                id: book.localId,
+                title: book.title,
+                cover: File(book.coverPath!),
+              ),
+            );
+
+            book.coverUrl = coverUrl;
+          }
+
           await bookRemoteDatasource.updateBook(
             UpdateBooksModel(
               localId: book.localId,
@@ -72,6 +94,8 @@ class SyncServiceImpl implements SyncService {
           final syncBook = book.copyWith(isSynced: true);
 
           await bookLocalDatasource.updateAfterSync(syncBook);
+
+          await CachedNetworkImage.evictFromCache(book.coverUrl!);
         } catch (e) {
           log(e.toString());
         }

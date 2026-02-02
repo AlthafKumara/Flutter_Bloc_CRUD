@@ -19,10 +19,11 @@ class UploadBookCoverUsecase implements UseCase<String, Params> {
 }
 
 class Params extends Equatable {
+  final int id;
   final String title;
   final File file;
 
-  const Params({required this.title, required this.file});
+  const Params({required this.id, required this.title, required this.file});
 
   @override
   List<Object?> get props => [title, file];

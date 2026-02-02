@@ -1,3 +1,4 @@
+import 'package:crud_clean_bloc/features/library/data/models/remote/delete_cover_book_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/api/api_url.dart';
@@ -14,6 +15,7 @@ sealed class BookRemoteDatasource {
   Future<String> uploadBookCover(UploadBookCoverModel model);
   Future<void> deleteBook(DeleteBookModel model);
   Future<void> updateBook(UpdateBooksModel model);
+  Future<void> deleteCoverBook(DeleteCoverBookModel model);
 }
 
 class BookRemoteDatasourceImpl implements BookRemoteDatasource {
@@ -53,7 +55,7 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
     try {
       final file = model.cover;
       final fileExt = model.cover.path.split('.').last;
-      final fileName = '${model.title}.$fileExt';
+      final fileName = '${model.title}${model.id}.$fileExt';
       await ApiUrl.bookStorage.upload(fileName, file);
 
       final publicUrl = ApiUrl.bookStorage.getPublicUrl(fileName);
@@ -95,6 +97,26 @@ class BookRemoteDatasourceImpl implements BookRemoteDatasource {
       }
 
       await ApiUrl.book.delete().inFilter("id", [model.id]);
+    } on PostgrestException catch (e) {
+      throw ServerException(e.message);
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> deleteCoverBook(DeleteCoverBookModel model) async {
+    try {
+      String coverUrl = model.coverUrl;
+
+      final uri = Uri.parse(coverUrl);
+      final segments = uri.pathSegments;
+
+      final pathRelative = segments.sublist(5).join('/');
+
+      final decodedPath = Uri.decodeFull(pathRelative);
+
+      await ApiUrl.bookStorage.remove([decodedPath]);
     } on PostgrestException catch (e) {
       throw ServerException(e.message);
     } catch (e) {

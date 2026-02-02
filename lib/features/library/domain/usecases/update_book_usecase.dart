@@ -21,6 +21,7 @@ class Params extends Equatable {
   final String description;
   final String author;
   String? coverUrl;
+  String? coverPath;
 
   Params({
     required this.localId,
@@ -28,7 +29,8 @@ class Params extends Equatable {
     required this.description,
     required this.author,
     this.coverUrl,
+    this.coverPath,
   });
   @override
-  List<Object?> get props => [id, title, description, author, coverUrl];
+  List<Object?> get props => [id, title, description, author, coverUrl, coverPath];
 }

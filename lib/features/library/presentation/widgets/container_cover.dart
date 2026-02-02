@@ -19,7 +19,10 @@ class ContainerCover extends StatelessWidget {
     final String? coverUrl = book?.coverUrl;
 
     // 1️⃣ JIKA ADA URL → pakai CachedNetworkImage
-    if (coverUrl != null && coverUrl.isNotEmpty) {
+    if (coverUrl != null &&
+        coverUrl.isNotEmpty &&
+        localPath == null &&
+        newFile == null) {
       return _networkCover(coverUrl);
     }
 

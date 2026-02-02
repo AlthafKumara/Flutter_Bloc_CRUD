@@ -65,7 +65,6 @@ class LibraryDependency {
       () => LibraryCubit(
         getIt<GetBooksUseCase>(),
         getIt<CreateBookUsecase>(),
-        getIt<UploadBookCoverUsecase>(),
         getIt<DeleteBooksUsecase>(),
         getIt<UpdateBookUsecase>(),
       ),

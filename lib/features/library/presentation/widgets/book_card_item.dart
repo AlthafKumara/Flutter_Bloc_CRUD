@@ -150,7 +150,7 @@ class BookCardItem extends StatelessWidget {
   }
 
   Widget _bookCover(String? url) {
-    if (url != null) {
+    if (url != null && url.isNotEmpty && book!.coverPath == null) {
       return CachedNetworkImage(
         imageUrl: url,
         imageBuilder: (context, imageProvider) => Container(

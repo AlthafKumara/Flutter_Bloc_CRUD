@@ -10,7 +10,6 @@ import '../../../domain/usecases/create_book_usecase.dart';
 import '../../../domain/usecases/delete_books_usecase.dart';
 import '../../../domain/usecases/get_books_usecase.dart';
 import '../../../domain/usecases/update_book_usecase.dart';
-import '../../../domain/usecases/upload_book_cover_usecase.dart';
 import '../../../domain/usecases/usecase_params.dart';
 
 part 'library_state.dart';
@@ -18,14 +17,12 @@ part 'library_state.dart';
 class LibraryCubit extends Cubit<LibraryState> {
   final GetBooksUseCase _getBooksUseCase;
   final CreateBookUsecase _createBookUsecase;
-  final UploadBookCoverUsecase _uploadBookCoverUsecase;
   final DeleteBooksUsecase _deleteBooksUsecase;
   final UpdateBookUsecase _updateBookUsecase;
 
   LibraryCubit(
     this._getBooksUseCase,
     this._createBookUsecase,
-    this._uploadBookCoverUsecase,
     this._deleteBooksUsecase,
     this._updateBookUsecase,
   ) : super(LibraryInitial());
@@ -98,24 +95,14 @@ class LibraryCubit extends Cubit<LibraryState> {
     required String description,
     String? oldCoverUrl,
     File? newCoverFile,
+    String? coverPath,
   }) async {
     emit(UpdateBookLoadingState());
 
     String? coverUrl = oldCoverUrl;
 
     if (newCoverFile != null) {
-      final uploadResult = await _uploadBookCoverUsecase.call(
-        UploadBookCoverParams(title: title, file: newCoverFile),
-      );
-
-      final uploadEither = await uploadResult.fold((failure) async {
-        emit(UploadBookCoverErrorState(failure.message));
-        return null;
-      }, (uploadedUrl) async => uploadedUrl);
-
-      if (uploadEither == null) return;
-
-      coverUrl = uploadEither;
+      coverPath = newCoverFile.path;
     }
 
     final updateResult = await _updateBookUsecase.call(
@@ -125,6 +112,7 @@ class LibraryCubit extends Cubit<LibraryState> {
         author: author,
         description: description,
         coverUrl: coverUrl,
+        coverPath: coverPath
       ),
     );
 
@@ -134,7 +122,7 @@ class LibraryCubit extends Cubit<LibraryState> {
     );
   }
 
-  Future<void> deleteBook({required int localId,String? coverUrl}) async {
+  Future<void> deleteBook({required int localId, String? coverUrl}) async {
     emit(DeleteBookLoadingState());
 
     final result = await _deleteBooksUsecase.call(
